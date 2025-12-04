@@ -3,6 +3,9 @@ import { Stats } from "../components/stats/Stats";
 import { Footer } from "../components/layout/Footer";
 import { Navbar } from "../components/layout/Navbar";
 import { Features } from "../components/Features/Feature";
+import { DriverSteps } from "../components/how-it-works/DriverSteps";
+import { PassengerSteps } from "../components/how-it-works/PassengerSteps";
+import { JoinRwaRide } from "../components/joinrwaride/JoinRwaride";
 
 export function LandingPage() {
   function handleStart() {
@@ -10,11 +13,14 @@ export function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-purple-50">
       <Navbar onGetStarted={handleStart} />
       <Hero onGetStarted={handleStart} />
       <Stats />
+      <DriverSteps />
+      <PassengerSteps />
       <Features />
+      <JoinRwaRide onGetStarted={handleStart} />
       <Footer />
     </div>
   );

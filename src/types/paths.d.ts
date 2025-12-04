@@ -7,4 +7,20 @@ declare module "@/hooks/use-mobile" {
   export function useIsMobile(): boolean;
 }
 
-// Keep declarations minimal — let component modules resolve from source files.
+// Wildcard fallbacks for component imports when the path-alias isn't picked up
+// by the environment (editor/CI). These are permissive and can be removed
+// once the compiler resolves `@/*` paths directly.
+declare module "@/components/*" {
+  const value: any;
+  export default value;
+}
+
+declare module "@/components/ui/*" {
+  const value: any;
+  export default value;
+}
+
+declare module "@/*" {
+  const value: any;
+  export default value;
+}

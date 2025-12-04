@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "../ui/card";
+import { Card, CardHeader, CardTitle, CardDescription } from "../ui/card";
 
 interface FeatureCardProps {
   icon: React.ReactNode;

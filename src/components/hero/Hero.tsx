@@ -1,7 +1,8 @@
-import { Users, Car } from "lucide-react";
+import { Users, Car, ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
 import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useCallback } from "react";
+import { ArrowLeft } from "lucide-react";
 
 interface HeroProps {
   onGetStarted: () => void;
@@ -34,15 +35,16 @@ export function Hero({ onGetStarted }: HeroProps) {
   );
 
   return (
-    <section className="container mx-auto px-4 py-12 md:py-20">
+    <section className="container mx-auto px-4 py-12 md:py-20 ">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         {/* Left: content */}
         <div className="text-center md:text-left">
-          <div className="inline-block mb-4 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-            🇷🇼 Rwanda's Premier Carpooling Platform
+          <div className="flex mb-4 px-4 py-2  bg-green-100 text-green-700 rounded-full w-100  text-xl font-medium">
+            <Car  />
+            <span className="mx-2">Rwanda's Carpooling Platform</span>
           </div>
 
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 leading-tight bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 leading-tight bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
             Travel Smarter, Save More, Connect Better
           </h2>
 
@@ -55,7 +57,7 @@ export function Hero({ onGetStarted }: HeroProps) {
             <Button
               size="lg"
               onClick={onGetStarted}
-              className="text-lg px-8 py-4"
+              className="text-lg px-8 py-4 bg-[#101828]"
             >
               <Users className="mr-2" /> Find a Ride
             </Button>
@@ -63,7 +65,7 @@ export function Hero({ onGetStarted }: HeroProps) {
               size="lg"
               variant="outline"
               onClick={onGetStarted}
-              className="text-lg px-8 py-4"
+              className="text-lg px-8 py-4 bg-linear-to-r from-green-600 to-blue-600 text-white hover:bg-linear-to-r hover:from-blue-600 hover:to-green-600 capitalize"
             >
               <Car className="mr-2" /> Become a Driver
             </Button>
@@ -79,7 +81,7 @@ export function Hero({ onGetStarted }: HeroProps) {
             >
               <div className="flex">
                 {IMAGES.map((src, idx) => (
-                  <div className="embla__slide flex-shrink-0 w-full" key={idx}>
+                  <div className="embla__slide shrink-0 w-full" key={idx}>
                     <img
                       src={`${src}?auto=compress&cs=tinysrgb&dpr=1&w=1200`}
                       alt={`Slide ${idx + 1}`}
@@ -95,18 +97,18 @@ export function Hero({ onGetStarted }: HeroProps) {
               <button
                 onClick={scrollPrev}
                 aria-label="Previous"
-                className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow"
+                className="bg-green-800 hover:bg-green-300/40 text-black p-2 rounded-full shadow animate animate-pulse"
               >
-                ‹
+                <ArrowLeft />
               </button>
             </div>
             <div className="absolute inset-y-1/2 right-3 transform -translate-y-1/2">
               <button
                 onClick={scrollNext}
                 aria-label="Next"
-                className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow"
+                className="bg-green-800 hover:bg-green-300/40 text-black p-2 rounded-full shadow animate animate-pulse"
               >
-                ›
+                <ArrowRight />
               </button>
             </div>
           </div>
