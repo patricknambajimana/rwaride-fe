@@ -1,7 +1,7 @@
-import React from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
+import { Button } from "../../ui/button";
 import { Search } from "lucide-react";
 
 interface Props {
@@ -30,18 +30,18 @@ export function SearchForm({
       <div className="grid md:grid-cols-3 gap-4">
         <div>
           <Label>From</Label>
-          <Input value={from} onChange={(e) => setFrom(e.target.value)} />
+          <Input value={from} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFrom(e.target.value)} />
         </div>
         <div>
           <Label>To</Label>
-          <Input value={to} onChange={(e) => setTo(e.target.value)} />
+          <Input value={to} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTo(e.target.value)} />
         </div>
         <div>
           <Label>Date</Label>
           <Input
             type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDate(e.target.value)}
           />
         </div>
       </div>

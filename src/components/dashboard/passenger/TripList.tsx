@@ -1,8 +1,7 @@
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "../../ui/card";
+import { Avatar, AvatarFallback } from "../../ui/avatar";
+import { Badge } from "../../ui/badge";
+import { Button } from "../../ui/button";
 import { Star, MapPin, Calendar, Clock, MessageCircle } from "lucide-react";
 
 export interface Trip {

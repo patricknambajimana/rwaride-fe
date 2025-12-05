@@ -1,20 +1,8 @@
 import { useState, useEffect } from "react";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Search,
-  MapPin,
-  Calendar,
-  Clock,
-  Star,
-  User,
-  LogOut,
-  MessageCircle,
-} from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
+import { Card, CardContent } from "../../ui/card";
 import { ChatDialog } from "./ChatDialog";
-import { Button } from "@/components/ui/button";
 import { PassengerHeader } from "./PassengerHeader";
 import { SearchForm } from "./SearchForm";
 import { TripList } from "./TripList";

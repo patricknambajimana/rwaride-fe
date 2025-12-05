@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -50,7 +51,7 @@ export function Login({
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-green-50 to-blue-50 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
@@ -96,16 +97,16 @@ export function Login({
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Logging In..." : "Log In"}
             </Button>
-
+      
             <div className="text-center text-sm">
               <span className="text-gray-600">Don't have an account? </span>
-              <button
-                type="button"
+              <Link
+                to="/auth/signup"
                 onClick={onSwitchToSignUp}
-                className="text-green-600 hover:underline"
+                className="text-green-600 hover:underline cursor-pointer"
               >
                 Sign Up
-              </button>
+              </Link>
             </div>
           </form>
         </CardContent>

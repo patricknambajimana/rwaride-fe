@@ -1,7 +1,6 @@
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "../../ui/card";
+import { Avatar, AvatarFallback } from "../../ui/avatar";
+import { Badge } from "../../ui/badge";
 import { Calendar, Clock, Star } from "lucide-react";
 
 interface Booking {

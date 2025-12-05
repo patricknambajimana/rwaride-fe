@@ -1,6 +1,5 @@
-
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "../../ui/badge";
+import { Avatar, AvatarFallback } from "../../ui/avatar";
 import { User, MapPin } from "lucide-react";
 
 interface Props {

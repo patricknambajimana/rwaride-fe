@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -30,6 +31,7 @@ interface SignUpProps {
 }
 
 export function SignUp({ onSuccess, onSwitchToLogin }: SignUpProps) {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,14 +45,24 @@ export function SignUp({ onSuccess, onSwitchToLogin }: SignUpProps) {
     e.preventDefault();
     setLoading(true);
 
-    // ❗ FRONTEND ONLY — Just pass data upwards
+    // Call parent onSuccess handler
     onSuccess(email, password, role, name, phone);
+
+    // Navigate based on role
+    if (role === "driver") {
+      navigate("/driver-dashboard");
+    } else if (role === "passenger") {
+      navigate("/passenger");
+    } else {
+      // Admin or default
+      navigate("/");
+    }
 
     setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-green-600 to-blue-600 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
@@ -120,11 +132,12 @@ export function SignUp({ onSuccess, onSwitchToLogin }: SignUpProps) {
               <Select
                 value={role}
                 onValueChange={(value: any) => setRole(value)}
+               
               >
                 <SelectTrigger id="role">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent >
                   <SelectItem value="passenger">Passenger</SelectItem>
                   <SelectItem value="driver">Driver</SelectItem>
                   <SelectItem value="admin">Administrator</SelectItem>
