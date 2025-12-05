@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { Bell } from "lucide-react";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 
 interface Notification {
   id: string;

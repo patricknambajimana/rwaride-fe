@@ -1,19 +1,19 @@
-"use client";
+
 
 import { useState, useEffect } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../../ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/card";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import { Badge } from "./ui/badge";
-import { Progress } from "./ui/progress";
+} from "../../ui/card";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
+import { Avatar, AvatarFallback } from "../../ui/avatar";
+import { Badge } from "../../ui/badge";
+import { Progress } from "../../ui/progress";
 import {
   Search,
   MapPin,
