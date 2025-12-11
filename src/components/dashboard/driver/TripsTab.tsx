@@ -20,9 +20,11 @@ interface TripsTabProps {
   myTrips: Trip[];
   onCreateTrip: (formData: any) => Promise<void>;
   loading: boolean;
+  onOpenChat?: (payload: { tripId: string; recipientId: string; recipientName: string }) => void;
+  onUpdateBookingStatus?: (tripId: string, bookingId: string, status: 'confirmed' | 'cancelled') => void;
 }
 
-export function TripsTab({ myTrips, onCreateTrip, loading }: TripsTabProps) {
+export function TripsTab({ myTrips, onCreateTrip, loading, onOpenChat, onUpdateBookingStatus }: TripsTabProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -49,7 +51,7 @@ export function TripsTab({ myTrips, onCreateTrip, loading }: TripsTabProps) {
 
       <div className="space-y-4">
         {myTrips.map((trip) => (
-          <TripCard key={trip.id} trip={trip} />
+          <TripCard key={trip.id} trip={trip} onOpenChat={onOpenChat} onUpdateBookingStatus={onUpdateBookingStatus} />
         ))}
 
         {myTrips.length === 0 && (

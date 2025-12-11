@@ -16,9 +16,11 @@ interface Trip {
 
 interface TripCardProps {
   trip: Trip;
+  onOpenChat?: (payload: { tripId: string; recipientId: string; recipientName: string }) => void;
+  onUpdateBookingStatus?: (tripId: string, bookingId: string, status: 'confirmed' | 'cancelled') => void;
 }
 
-export function TripCard({ trip }: TripCardProps) {
+export function TripCard({ trip, onOpenChat, onUpdateBookingStatus }: TripCardProps) {
   return (
     <Card>
       <CardContent className="p-6">
@@ -61,7 +63,12 @@ export function TripCard({ trip }: TripCardProps) {
           </div>
 
           {trip.bookings && trip.bookings.length > 0 && (
-            <PassengerList bookings={trip.bookings} />
+            <PassengerList
+              bookings={trip.bookings}
+              onOpenChat={onOpenChat}
+              tripId={trip.id}
+              onUpdateBookingStatus={onUpdateBookingStatus}
+            />
           )}
         </div>
       </CardContent>
