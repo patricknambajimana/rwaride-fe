@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Car } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 export type UserRole = "passenger" | "driver" | "admin";
 
@@ -27,8 +28,11 @@ export function Login({
   initialEmail = "",
   initialPassword = "",
 }: LoginProps) {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState(initialPassword);
+  const [role, setRole] = useState<'passenger' | 'driver'>('passenger');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,11 +42,16 @@ export function Login({
     setLoading(true);
 
     try {
-      // Placeholder: replace with real API/auth logic
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Example: assume login always succeeds (for now)
-      onSuccess(email, password, "passenger"); // default role, you can adjust
+      // Use AuthContext to login
+      await login(email, password, role);
+      onSuccess(email, password, role);
+      
+      // Redirect based on role
+      if (role === 'driver') {
+        navigate('/driver');
+      } else {
+        navigate('/passenger');
+      }
     } catch (err: any) {
       setError(err.message || "Login failed. Please try again.");
     } finally {
@@ -64,6 +73,39 @@ export function Login({
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Role Selection */}
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold">I am a</Label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setRole('passenger')}
+                  className={`p-2 rounded-lg border-2 cursor-pointer transition-all ${
+                    role === 'passenger'
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 bg-gray-50'
+                  }`}
+                >
+                  <p className={`text-sm font-medium ${role === 'passenger' ? 'text-blue-600' : 'text-gray-600'}`}>
+                    Passenger
+                  </p>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('driver')}
+                  className={`p-2 rounded-lg border-2 cursor-pointer transition-all ${
+                    role === 'driver'
+                      ? 'border-green-500 bg-green-50'
+                      : 'border-gray-200 bg-gray-50'
+                  }`}
+                >
+                  <p className={`text-sm font-medium ${role === 'driver' ? 'text-green-600' : 'text-gray-600'}`}>
+                    Driver
+                  </p>
+                </button>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
