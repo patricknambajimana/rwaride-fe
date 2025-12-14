@@ -15,13 +15,27 @@ export function LandingPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-purple-50">
       <Navbar onGetStarted={handleStart} />
-      <Hero onGetStarted={handleStart} />
-      <Stats />
-      <DriverSteps />
-      <PassengerSteps />
-      <Features />
-      <JoinRwaRide onGetStarted={handleStart} />
-      <Footer />
+      <section id="home" className="scroll-mt-24">
+        <Hero onGetStarted={handleStart} />
+      </section>
+      <section id="stats" className="scroll-mt-24">
+        <Stats />
+      </section>
+      <section id="driver" className="scroll-mt-24 space-y-8">
+        <DriverSteps />
+        </section>
+        <section id="passenger" className="scroll-mt-24 space-y-8" >
+        <PassengerSteps />
+      </section>
+      <section id="features" className="scroll-mt-24">
+        <Features />
+      </section>
+      <section id="join" className="scroll-mt-24">
+        <JoinRwaRide onGetStarted={handleStart} />
+      </section>
+      <section id="contact" className="scroll-mt-24">
+        <Footer />
+      </section>
     </div>
   );
 }

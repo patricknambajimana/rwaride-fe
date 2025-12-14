@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import ProfileManagement from "../pages/admin/ProfileManagement";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { LandingPage } from "../pages/homepage/LandingPage";
 import PassengerPage from "../pages/passenger/PassengerPage";
@@ -12,7 +14,7 @@ export function AppRoutes() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route index element={<LandingPage />} />
+          <Route path="/" element={<LandingPage />} />
           <Route
             path="/passenger"
             element={
@@ -29,6 +31,8 @@ export function AppRoutes() {
               </ProtectedRoute>
             }
           />
+          <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/profile" element={<ProtectedRoute ><ProfileManagement /></ProtectedRoute>} />
           <Route path="/auth/login" element={<Login onSuccess={() => {}} onSwitchToSignUp={() => {}} />} />
           <Route path="/auth/signup" element={<SignUp onSuccess={() => {}} onSwitchToLogin={() => {}} />} />
         </Routes>

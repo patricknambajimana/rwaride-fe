@@ -216,13 +216,13 @@ export function SignUp({ onSuccess, onSwitchToLogin }: SignUpProps) {
 
             <div className="text-center text-xs mt-1">
               <span className="text-gray-600">Have account? </span>
-              <button
+                <button
                 type="button"
-                onClick={onSwitchToLogin}
+                onClick={() => navigate("/auth/login")}
                 className="text-green-600 font-semibold hover:text-green-700 hover:underline"
-              >
+                >
                 Log In
-              </button>
+                </button>
             </div>
           </form>
         </CardContent>
