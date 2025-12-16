@@ -41,7 +41,7 @@ export function RecentMessages({ messages }: Props) {
       <CardContent className="space-y-3">
         {messages.map((msg) => (
           <div key={msg.id} className="flex gap-2 pb-3 border-b last:border-b-0">
-            <Avatar className="w-8 h-8 flex-shrink-0">
+            <Avatar className="w-8 h-8 shrink-0">
               <AvatarFallback className="text-xs">{msg.driver_name?.[0]}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">

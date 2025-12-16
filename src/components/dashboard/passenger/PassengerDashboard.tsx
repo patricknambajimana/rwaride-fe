@@ -11,6 +11,8 @@ import { RecentMessages } from "./RecentMessages";
 import { PaymentSummary } from "./PaymentSummary";
 import { BookingsList } from "./BookingsList";
 import { ProfileSection } from "./ProfileSection";
+import { SettingsPage } from "./SettingsPage";
+import { ProfileSettings } from "./ProfileSettings";
 import { BarChart3, MapPin, AlertCircle } from "lucide-react";
 
 interface PassengerDashboardProps {
@@ -21,10 +23,15 @@ interface PassengerDashboardProps {
   };
   onLogout: () => void;
   onSearchTrips: (from: string, to: string, date: string) => Promise<any[]>;
-  onBookTrip: (tripId: string) => void;
-  onRateTrip: (bookingId: string, rating: number) => void;
+  onBookTrip: (tripId: string, seats?: number) => Promise<void> | void;
+  onRateTrip: (bookingId: string, rating: number) => Promise<void> | void;
+  onCancelBooking?: (bookingId: string) => Promise<void> | void;
   fetchBookings: () => Promise<any[]>;
   initialTrips?: any[];
+  onProfileClick?: () => void;
+  onSettingsClick?: () => void;
+  onChangePasswordClick?: () => void;
+  onDeleteAccountClick?: () => void;
 }
 
 export function PassengerDashboard({
@@ -33,8 +40,13 @@ export function PassengerDashboard({
   onSearchTrips,
   onBookTrip,
   onRateTrip,
+  onCancelBooking,
   fetchBookings,
   initialTrips = [],
+  onProfileClick,
+  onSettingsClick,
+  onChangePasswordClick,
+  onDeleteAccountClick,
 }: PassengerDashboardProps) {
   const [searchFrom, setSearchFrom] = useState("");
   const [searchTo, setSearchTo] = useState("");
@@ -85,25 +97,50 @@ export function PassengerDashboard({
     .filter((b) => b.status !== "completed" && b.status !== "cancelled")
     .slice(0, 3);
 
-  const recentMessages = [
-    { id: "1", driver_name: "Patrick Niyomugabo", message: "I'll be there in 5 minutes", timestamp: "2 min ago", unread: true },
-    { id: "2", driver_name: "Eric Haliamana", message: "Are you ready for pickup?", timestamp: "15 min ago" },
-    { id: "3", driver_name: "JJ Paul Ikekamugo", message: "Thanks for the ride!", timestamp: "2 hours ago" },
-  ];
+  // Derive stats from backend data (via myBookings)
+  const confirmedOrCompleted = myBookings.filter(
+    (b) => b.status === "confirmed" || b.status === "completed"
+  );
+  const totalEarnings = confirmedOrCompleted.reduce(
+    (sum, b) => sum + (Number(b.total_price) || 0),
+    0
+  );
+  const activeTrips = myBookings.filter(
+    (b) => b.status !== "completed" && b.status !== "cancelled"
+  ).length;
+  const ratings = myBookings
+    .map((b: any) => (typeof b.rating === "number" ? b.rating : null))
+    .filter((r: number | null) => r !== null) as number[];
+  const avgRating = ratings.length
+    ? (ratings.reduce((a, c) => a + c, 0) / ratings.length).toFixed(1)
+    : "N/A";
 
   const stats = [
     { label: "Trips Booked", value: myBookings.length, icon: <MapPin className="w-5 h-5 text-green-600" /> },
-    { label: "Earnings", value: "47K", icon: <BarChart3 className="w-5 h-5 text-blue-600" /> },
-    { label: "Total Distance", value: "285K", icon: <AlertCircle className="w-5 h-5 text-orange-600" /> },
-    { label: "Avg Rating", value: "4.8", icon: <BarChart3 className="w-5 h-5 text-yellow-600" /> },
+    { label: "Payment", value: `${totalEarnings.toLocaleString()} RWF`, icon: <BarChart3 className="w-5 h-5 text-blue-600" /> },
+    { label: "Active Trips", value: String(activeTrips), icon: <AlertCircle className="w-5 h-5 text-orange-600" /> },
+    { label: "Avg Rating", value: String(avgRating), icon: <BarChart3 className="w-5 h-5 text-yellow-600" /> },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Navbar userName={user.name} onLogout={onLogout} />
+      <Navbar 
+        userName={user.name} 
+        onLogout={onLogout}
+        onProfileClick={onProfileClick}
+        onSettingsClick={onSettingsClick}
+        onChangePasswordClick={onChangePasswordClick}
+        onDeleteAccountClick={onDeleteAccountClick}
+        onNavigateToSettings={setActiveTab}
+      />
 
       <div className="flex flex-1">
-        <Sidebar activeItem={activeTab} onSelect={setActiveTab} />
+        <Sidebar 
+          activeItem={activeTab} 
+          onSelect={setActiveTab}
+          onLogout={onLogout}
+          onDeleteAccount={onDeleteAccountClick}
+        />
 
         <main className="flex-1 md:ml-64 overflow-auto">
           <div className="container mx-auto px-4 md:px-8 py-8">
@@ -120,7 +157,7 @@ export function PassengerDashboard({
                 <DashboardStats stats={stats} />
 
                 {/* Find Your Next Ride Section */}
-                <Card className="bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0">
+                <Card className="bg-linear-to-r from-green-600 to-blue-700 text-white border-0">
                   <CardContent className="p-6 space-y-4">
                     <h3 className="text-lg font-semibold">Find Your Next Ride</h3>
                     <SearchRideForm
@@ -153,22 +190,26 @@ export function PassengerDashboard({
                       onMessage={handleMessageBooking}
                       onCancel={handleCancelBooking}
                     />
-                  </div>
-
-                  {/* Right Sidebar: Messages & Payment */}
-                  <div className="space-y-4">
-                    <RecentMessages messages={recentMessages} />
-                    <PaymentSummary thisMonth="42,500 RWF" pending="5,000 RWF" />
-                  </div>
-                </div>
-
-                {/* Available Trips */}
+{/* Available Trips */}
                 {availableTrips.length > 0 && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Available Trips</h3>
                     <TripList trips={availableTrips} onBookTrip={onBookTrip} openChat={openChat} />
                   </div>
-                )}
+                )}  
+                  </div>
+
+                  {/* Right Sidebar: Messages & Payment */}
+                  <div className="space-y-4">
+                    {/* Render messages panel only when backend data is available */}
+                    {false ? (
+                      <RecentMessages messages={[]} />
+                    ) : null}
+                    <PaymentSummary thisMonth="42,500 RWF" pending="5,000 RWF" />
+                  </div>
+                </div>
+
+                
               </div>
             )}
 
@@ -177,7 +218,7 @@ export function PassengerDashboard({
               <div className="space-y-6">
                 <h2 className="text-3xl font-bold">Find Your Ride</h2>
 
-                <Card className="bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0">
+                <Card className="bg-linear-to-r from-green-600 to-blue-600 text-white border-0">
                   <CardContent className="p-6 space-y-4">
                     <SearchRideForm
                       from={searchFrom}
@@ -215,7 +256,10 @@ export function PassengerDashboard({
                     </CardContent>
                   </Card>
                 ) : (
-                  <BookingsList bookings={myBookings} onRateTrip={onRateTrip} />
+                  <BookingsList 
+                    bookings={myBookings} 
+                    onRateTrip={onRateTrip}
+                  />
                 )}
               </div>
             )}
@@ -224,17 +268,11 @@ export function PassengerDashboard({
             {activeTab === "messages" && (
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold">Messages</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {recentMessages.map((msg) => (
-                    <Card key={msg.id}>
-                      <CardContent className="p-4">
-                        <p className="font-semibold">{msg.driver_name}</p>
-                        <p className="text-sm text-gray-600 mt-2">{msg.message}</p>
-                        <p className="text-xs text-gray-400 mt-2">{msg.timestamp}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                <Card>
+                  <CardContent className="p-12 text-center text-gray-500">
+                    <p>No messages yet.</p>
+                  </CardContent>
+                </Card>
               </div>
             )}
 
@@ -267,25 +305,40 @@ export function PassengerDashboard({
                     </CardContent>
                   </Card>
                 ) : (
-                  <BookingsList bookings={myBookings} onRateTrip={onRateTrip} />
+                  <BookingsList 
+                    bookings={myBookings} 
+                    onRateTrip={onRateTrip}
+                  />
                 )}
               </div>
             )}
 
             {/* Settings */}
-            {activeTab === "settings" && (
+            {activeTab === "setting" && (
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold">Settings</h2>
+                <ProfileSettings 
+                  authUser={user} 
+                  onLogout={onLogout}
+                />
+              </div>
+            )}
+
+            {/* Profile Tab */}
+            {activeTab === "profile" && (
+              <div className="space-y-4">
+                <h2 className="text-3xl font-bold">My Profile</h2>
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Profile Settings</CardTitle>
+                  <CardHeader className="bg-linear-to-r from-green-500 to-blue-500 text-white">
+                    <CardTitle>Profile Information</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-6">
                     <ProfileSection user={user} />
                   </CardContent>
                 </Card>
               </div>
             )}
+
 
             {/* Help */}
             {activeTab === "help" && (

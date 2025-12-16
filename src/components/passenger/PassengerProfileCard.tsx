@@ -80,7 +80,7 @@ export function PassengerProfileCard({
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
             {/* Avatar */}
-            <div className="relative flex-shrink-0">
+            <div className="relative shrink-0">
               <Avatar className="h-24 w-24 md:h-32 md:w-32">
                 <AvatarImage src={profile.profileImage} alt={profile.name} />
                 <AvatarFallback>{profile.name[0]}</AvatarFallback>
