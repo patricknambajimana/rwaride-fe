@@ -26,9 +26,9 @@ export function AppRoutes() {
           <Route
             path="/driver"
             element={
-              <ProtectedRoute requiredRole="driver">
+             
                 <DriverDashboard user={null} onLogout={() => { console.log('Logged out'); }} />
-              </ProtectedRoute>
+              
             }
           />
           <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
