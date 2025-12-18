@@ -20,9 +20,10 @@ export interface CarRegistrationData {
 interface CarRegistrationProps {
   vehicleId?: number;
   onSuccess?: () => void;
+  onSubmit?: (data: CarRegistrationData) => Promise<void> | void;
 }
 
-export function CarRegistration({ vehicleId, onSuccess }: CarRegistrationProps) {
+export function CarRegistration({ vehicleId, onSuccess, onSubmit }: CarRegistrationProps) {
   const [formData, setFormData] = useState<CarRegistrationData>({
     make: '',
     model: '',
@@ -52,20 +53,32 @@ export function CarRegistration({ vehicleId, onSuccess }: CarRegistrationProps) 
         color: formData.color,
       };
 
+      // Allow parent-controlled submit when provided
+      if (onSubmit) {
+        await onSubmit({ ...formData });
+        return;
+      }
+
       if (isEditing && vehicleId) {
         await updateVehicle({
           vehicle_id: vehicleId,
           data: { color: formData.color, seat_capacity: formData.seat_capacity },
         }).unwrap();
-        toast.success('Vehicle updated successfully', {
-          description: `${formData.make} ${formData.model} updated`,
+        
+        toast.success('Vehicle Updated Successfully! ✅', {
+          description: `${formData.make} ${formData.model} has been updated`,
+          duration: 4000,
         });
+        
         if (onSuccess) onSuccess();
       } else {
         await registerVehicle(payload).unwrap();
-        toast.success('Vehicle registered successfully! 🚗', {
-          description: `${formData.make} ${formData.model} registered`,
+        
+        toast.success('Vehicle Registered Successfully! 🚗✨', {
+          description: `${formData.make} ${formData.model} (${formData.license_plate}) is now registered`,
+          duration: 5000,
         });
+        
         // Reset form
         setFormData({
           make: '',
@@ -75,11 +88,14 @@ export function CarRegistration({ vehicleId, onSuccess }: CarRegistrationProps) 
           seat_capacity: 4,
           year: new Date().getFullYear(),
         });
+        
         if (onSuccess) onSuccess();
       }
     } catch (error: any) {
-      toast.error(isEditing ? 'Failed to update vehicle' : 'Failed to register vehicle', {
-        description: error?.data?.message || error?.message || 'Please try again',
+      const errorMessage = error?.data?.msg || error?.data?.message || error?.message || 'Please try again';
+      toast.error(isEditing ? 'Failed to Update Vehicle ❌' : 'Failed to Register Vehicle ❌', {
+        description: errorMessage,
+        duration: 5000,
       });
     }
   };
@@ -91,11 +107,18 @@ export function CarRegistration({ vehicleId, onSuccess }: CarRegistrationProps) 
 
     try {
       await deleteVehicle(vehicleId).unwrap();
-      toast.success('Vehicle deleted successfully');
+      
+      toast.success('Vehicle Deleted Successfully! 🗑️', {
+        description: 'The vehicle has been removed from your account',
+        duration: 4000,
+      });
+      
       if (onSuccess) onSuccess();
     } catch (error: any) {
-      toast.error('Failed to delete vehicle', {
-        description: error?.data?.message || error?.message || 'Please try again',
+      const errorMessage = error?.data?.msg || error?.data?.message || error?.message || 'Please try again';
+      toast.error('Failed to Delete Vehicle ❌', {
+        description: errorMessage,
+        duration: 5000,
       });
     }
   };
@@ -105,7 +128,7 @@ export function CarRegistration({ vehicleId, onSuccess }: CarRegistrationProps) 
 
   return (
     <Card className="w-full shadow-lg border-0">
-      <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-t-lg">
+      <CardHeader className="bg-linear-to-r from-green-600 to-blue-600 text-white rounded-t-lg">
         <CardTitle>{isEditing ? 'Update Vehicle' : 'Register Vehicle'}</CardTitle>
         <CardDescription className="text-green-50">
           {isEditing ? 'Modify your vehicle details' : 'Register your vehicle details'}
@@ -227,7 +250,7 @@ export function CarRegistration({ vehicleId, onSuccess }: CarRegistrationProps) 
             <Button
               type="submit"
               disabled={isLoading}
-              className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2.5"
+              className="flex-1 bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2.5"
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">

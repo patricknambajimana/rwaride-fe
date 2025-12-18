@@ -147,6 +147,24 @@ const adminApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Admin"],
     }),
+
+    // Driver Tracking Module
+    // Get Driver Location
+    getDriverLocation: builder.query({
+      query: (driver_id) => `/tracking/location/${driver_id}`,
+      providesTags: ["Tracking"],
+    }),
+
+    // Review & Rating Module
+    // Submit Review
+    submitReview: builder.mutation({
+      query: (payload) => ({
+        url: "/reviews/submit",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["Review"],
+    }),
   }),
 });
 
@@ -163,6 +181,8 @@ export const {
   useGetAdminProfileQuery,
   useUpdateAdminProfileMutation,
   useVerifyDriverMutation,
+  useGetDriverLocationQuery,
+  useSubmitReviewMutation,
 } = adminApi;
 
 export default adminApi;

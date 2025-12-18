@@ -55,7 +55,7 @@ export function SearchRideForm({
         <div>
           <Input
             type="text"
-            placeholder="From (From City)"
+            placeholder="From (e.g., Kigali, Huye)"
             value={from}
             onChange={handleFromChange}
             className="bg-white border-2 border-gray-200 text-black placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
@@ -65,7 +65,7 @@ export function SearchRideForm({
         <div>
           <Input
             type="text"
-            placeholder="To (Destination)"
+            placeholder="To (e.g., Rubavu, Musanze)"
             value={to}
             onChange={handleToChange}
             className="bg-white border-2 border-gray-200 text-black placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
@@ -101,7 +101,10 @@ export function SearchRideForm({
           </Button>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center justify-between">
+        <p className="text-xs text-white/80">
+          💡 We'll show trips matching or passing through your route
+        </p>
         {onAdvanced && (
           <Button
             type="button"
@@ -109,7 +112,7 @@ export function SearchRideForm({
             size="sm"
             onClick={onAdvanced}
             disabled={isLoading}
-            className="border-blue-600 text-blue-600 hover:bg-blue-50"
+            className="border-blue-600 text-blue-600 hover:bg-blue-50 bg-white"
           >
             <Settings2 className="w-4 h-4 mr-2" />
             Advanced Filters

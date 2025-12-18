@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
 } from '../../ui/dropdown-menu';
 import { Badge } from '../../ui/badge';
-import { Bell, LogOut, Settings, User, ChevronDown } from 'lucide-react';
+import { Bell, LogOut, Settings, User, ChevronDown, PanelLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface DriverNavbarProps {
@@ -17,9 +17,10 @@ interface DriverNavbarProps {
   onProfileClick?: () => void;
   onSettingsClick?: () => void;
   activeTab?: string;
+  onToggleSidebar?: () => void;
 }
 
-export function DriverNavbar({ userName = 'Driver', onLogout, onProfileClick, onSettingsClick }: DriverNavbarProps) {
+export function DriverNavbar({ userName = 'Driver', onLogout, onProfileClick, onSettingsClick, onToggleSidebar }: DriverNavbarProps) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -38,6 +39,16 @@ export function DriverNavbar({ userName = 'Driver', onLogout, onProfileClick, on
       <div className="max-w-full mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-3">
+          {/* Mobile: Sidebar trigger */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden mr-1"
+            onClick={() => onToggleSidebar?.()}
+            aria-label="Open menu"
+          >
+            <PanelLeft className="w-5 h-5" />
+          </Button>
           <div className="w-10 h-10 rounded-lg bg-linear-to-r from-green-600 to-blue-600 flex items-center justify-center">
             <span className="text-white font-bold">R</span>
           </div>

@@ -24,12 +24,14 @@ interface DriverSidebarProps {
   activeItem: string;
   onSelect: (id: string) => void;
   className?: string;
+  isMobileVariant?: boolean;
 }
 
 export function DriverSidebar({
   activeItem,
   onSelect,
   className,
+  isMobileVariant,
 }: DriverSidebarProps) {
   const menuItems: MenuItem[] = [
     { id: "overview", label: "Dashboard", icon: LayoutDashboard },
@@ -42,6 +44,42 @@ export function DriverSidebar({
     { id: "history", label: "History", icon: History },
     { id: "settings", label: "Settings", icon: Settings },
   ];
+
+  // Mobile variant (rendered inside a Drawer/Sheet)
+  if (isMobileVariant) {
+    return (
+      <div className="w-64 bg-white min-h-screen pt-4 flex flex-col overflow-y-auto">
+        <div className="flex-1 px-4 space-y-2">
+          {menuItems.map((item) => {
+            const isActive = activeItem === item.id;
+
+            return (
+              <Button
+                key={item.id}
+                variant={isActive ? "default" : "ghost"}
+                onClick={() => onSelect(item.id)}
+                className={cn(
+                  "w-full justify-start gap-3 relative transition-all duration-200",
+                  isActive
+                    ? "bg-linear-to-r from-green-500 to-blue-500 text-white shadow-md hover:from-green-600 hover:to-blue-600"
+                    : "text-gray-700 hover:bg-gray-100"
+                )}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="font-medium">{item.label}</span>
+
+                {item.badge && (
+                  <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                    {item.badge}
+                  </span>
+                )}
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <aside

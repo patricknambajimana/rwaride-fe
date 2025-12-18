@@ -18,7 +18,16 @@ export const baseApi = createApi({
       return response.status >= 200 && response.status < 300;
     },
   }),
-  tagTypes: ["Auth", "User", "Ride", "Booking", "Admin"],
+  tagTypes: [
+    "Auth",
+    "User",
+    "Ride",
+    "Booking",
+    "Admin",
+    "Chat",
+    "Review",
+    "Tracking",
+  ],
   endpoints: () => ({}),
 });
 

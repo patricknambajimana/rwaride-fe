@@ -1,6 +1,7 @@
-﻿import { ReactNode } from 'react';
+﻿import { ReactNode, useState } from 'react';
 import { DriverNavbar } from './DriverNavbar';
 import { DriverSidebar } from './DriverSidebar';
+import { Sheet, SheetContent } from '../../ui/sheet';
 
 interface DriverLayoutProps {
   children: ReactNode;
@@ -17,19 +18,33 @@ export function DriverLayout({
   activeTab = 'overview',
   onTabChange,
 }: DriverLayoutProps) {
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-white flex flex-col">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-white flex flex-col">
       {/* Navbar */}
       <DriverNavbar 
         userName={userName} 
         onLogout={onLogout}
         onProfileClick={() => onTabChange?.('settings')}
         onSettingsClick={() => onTabChange?.('settings')}
+        onToggleSidebar={() => setMobileSidebarOpen(true)}
       />
 
       {/* Main Content */}
       <div className="flex flex-1">
-        {/* Sidebar */}
+        {/* Mobile Sidebar Drawer */}
+        <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
+          <SheetContent side="left" className="p-0 w-64 md:hidden">
+            <DriverSidebar 
+              isMobileVariant
+              activeItem={activeTab} 
+              onSelect={(id) => { onTabChange?.(id); setMobileSidebarOpen(false); }}
+            />
+          </SheetContent>
+        </Sheet>
+
+        {/* Desktop Sidebar */}
         <DriverSidebar activeItem={activeTab} onSelect={onTabChange || (() => {})} />
 
         {/* Content */}

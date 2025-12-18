@@ -12,7 +12,7 @@ export function CarRegistrationView() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold text-gray-900">Car Registration</h2>
-        <Badge className="bg-gradient-to-r from-green-500 to-blue-500 text-white flex items-center gap-2">
+        <Badge className="bg-linear-to-r from-green-500 to-blue-500 text-white flex items-center gap-2">
           <ShieldCheck className="w-4 h-4" />
           Required for trips
         </Badge>

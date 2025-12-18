@@ -18,6 +18,9 @@ export interface Trip {
   available_seats?: number;
   driver_id?: string;
   price_per_seat?: number;
+  match_type?: 'exact' | 'partial' | 'nearby';
+  origin?: string;
+  destination?: string;
 }
 
 interface Props {
@@ -64,19 +67,29 @@ export function TripList({ trips, onBookTrip, openChat }: Props) {
                 </div>
 
                 {/* Route Info */}
-                <div className="grid grid-cols-2 gap-4 bg-gray-50 p-3 rounded">
-                  <div className="text-gray-600 flex gap-2">
-                    <MapPin className="w-4 h-4 flex-shrink-0 mt-1" />
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium">FROM</p>
-                      <p className="text-sm font-medium">{trip.from_location}</p>
+                <div className="space-y-2">
+                  {trip.match_type && (
+                    <Badge 
+                      variant={trip.match_type === 'exact' ? 'default' : 'secondary'}
+                      className={trip.match_type === 'exact' ? 'bg-green-600' : 'bg-blue-500'}
+                    >
+                      {trip.match_type === 'exact' ? '✓ Exact Match' : trip.match_type === 'partial' ? 'Similar Route' : 'Nearby Route'}
+                    </Badge>
+                  )}
+                  <div className="grid grid-cols-2 gap-4 bg-gray-50 p-3 rounded">
+                    <div className="text-gray-600 flex gap-2">
+                      <MapPin className="w-4 h-4 flex-shrink-0 mt-1" />
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium">FROM</p>
+                        <p className="text-sm font-medium">{trip.from_location || trip.origin}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-gray-600 flex gap-2">
-                    <MapPin className="w-4 h-4 flex-shrink-0 mt-1" />
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium">TO</p>
-                      <p className="text-sm font-medium">{trip.to_location}</p>
+                    <div className="text-gray-600 flex gap-2">
+                      <MapPin className="w-4 h-4 flex-shrink-0 mt-1" />
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium">TO</p>
+                        <p className="text-sm font-medium">{trip.to_location || trip.destination}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
