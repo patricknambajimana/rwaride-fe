@@ -9,6 +9,11 @@ import {
   useRateBookingMutation,
 } from "../api/passengerApi";
 
+import {
+  useLazySearchRidesQuery,
+  useGetAvailableRidesQuery,
+} from "../api/ridesApi";
+
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -20,4 +25,7 @@ export {
   useGetUserBookingsQuery,
   useCancelBookingMutation,
   useRateBookingMutation,
+  // New enhanced search hooks
+  useLazySearchRidesQuery,
+  useGetAvailableRidesQuery,
 };

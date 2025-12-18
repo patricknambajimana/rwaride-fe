@@ -196,7 +196,7 @@ export function UserManagement({
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <Avatar className="h-10 w-10 md:h-12 md:w-12 flex-shrink-0">
+                    <Avatar className="h-10 w-10 md:h-12 md:w-12 shrink-0">
                       <AvatarImage src={user.image} alt={user.name} />
                       <AvatarFallback>{user.name[0]}</AvatarFallback>
                     </Avatar>
@@ -206,7 +206,7 @@ export function UserManagement({
                           {user.name}
                         </p>
                         {user.verified && (
-                          <Shield className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                          <Shield className="w-4 h-4 text-blue-600 shrink-0" />
                         )}
                       </div>
                       <p className="text-xs md:text-sm text-gray-600 truncate">
@@ -252,7 +252,7 @@ export function UserManagement({
                 {/* Warnings Alert */}
                 {user.warnings > 0 && (
                   <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-                    <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
                     <div className="text-xs">
                       <p className="font-semibold text-red-800">
                         {user.warnings} active warning{user.warnings > 1 ? "s" : ""}

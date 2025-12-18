@@ -13,7 +13,7 @@ export function TripFormWithList() {
           <CardTitle className="text-lg">Create Trip</CardTitle>
         </CardHeader>
         <CardContent className="p-4">
-          <CreateRideForm vehicleId={1} />
+          <CreateRideForm />
         </CardContent>
       </Card>
 

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { PassengerDashboard } from "../../components/dashboard/passenger/PassengerDashboard";
 import { useAuth } from "../../context/AuthContext";
 import {
-  useGetDriverTripsQuery,
-  useSearchTripsQuery,
+   useLazySearchRidesQuery,
+  useGetAvailableRidesQuery,
   useBookRideMutation,
   useGetUserBookingsQuery,
   useCancelBookingMutation,
@@ -15,18 +15,11 @@ const PassengerPage = () => {
   const navigate = useNavigate();
   const { logout, user: authUser } = useAuth();
   const [, setError] = useState<string | null>(null);
-  const [searchParams, setSearchParams] = useState<{
-    origin: string;
-    destination: string;
-    date?: string;
-  } | null>(null);
+  const [searchActive, setSearchActive] = useState(false);
 
-  // Redux Query Hooks
-  const { data: trips = [], isLoading, error: tripsError } = useGetDriverTripsQuery();
-  const { data: searchResults = [] } = useSearchTripsQuery(
-    searchParams || { origin: "", destination: "" },
-    { skip: !searchParams }
-  );
+  // Redux Query Hooks - Simplified
+  const { data: availableRides = [], isLoading } = useGetAvailableRidesQuery({ status: "active" });
+  const [searchRides, { data: searchResults = [], isLoading: isSearching }] = useLazySearchRidesQuery();
   const { data: bookings = [], refetch: refetchBookings } = useGetUserBookingsQuery();
   const [bookRide, { isLoading: isBooking }] = useBookRideMutation();
   const [cancelBooking, { isLoading: isCancelling }] = useCancelBookingMutation();
@@ -37,72 +30,20 @@ const PassengerPage = () => {
     navigate("/auth/login");
   };
 
-  // Search trips using Redux Query with fuzzy matching
+  // Simplified search - let backend handle route matching
   const handleSearchTrips = async (from: string, to: string, date: string) => {
     try {
-      setSearchParams({ origin: from, destination: to, date });
+      setSearchActive(true);
+      setError(null);
       
-      // If we have search results, enhance them with match types
-      if (searchResults.length > 0) {
-        const enhancedResults = searchResults.map((trip: any) => {
-          const tripOrigin = (trip.origin || trip.from_location || '').toLowerCase();
-          const tripDest = (trip.destination || trip.to_location || '').toLowerCase();
-          const searchFrom = from.toLowerCase();
-          const searchTo = to.toLowerCase();
-          
-          let match_type: 'exact' | 'partial' | 'nearby' = 'nearby';
-          
-          // Check for exact match
-          if (tripOrigin.includes(searchFrom) && tripDest.includes(searchTo)) {
-            match_type = 'exact';
-          }
-          // Check for partial match (either origin or destination matches)
-          else if (tripOrigin.includes(searchFrom) || tripDest.includes(searchTo) || 
-                   tripDest.includes(searchFrom) || tripOrigin.includes(searchTo)) {
-            match_type = 'partial';
-          }
-          
-          return { ...trip, match_type };
-        });
-        
-        // Sort by match quality: exact first, then partial, then nearby
-        return enhancedResults.sort((a: any, b: any) => {
-          const order = { exact: 0, partial: 1, nearby: 2 };
-          return order[a.match_type as keyof typeof order] - order[b.match_type as keyof typeof order];
-        });
-      }
-      
-      // If no results from API, try to find matching trips from all available trips
-      const allAvailableTrips = trips.filter((trip: any) => {
-        const tripOrigin = (trip.origin || trip.from_location || '').toLowerCase();
-        const tripDest = (trip.destination || trip.to_location || '').toLowerCase();
-        const searchFrom = from.toLowerCase();
-        const searchTo = to.toLowerCase();
-        
-        // Include trips that match or are related to the search
-        return tripOrigin.includes(searchFrom) || tripDest.includes(searchTo) ||
-               tripOrigin.includes(searchTo) || tripDest.includes(searchFrom);
-      }).map((trip: any) => {
-        const tripOrigin = (trip.origin || trip.from_location || '').toLowerCase();
-        const tripDest = (trip.destination || trip.to_location || '').toLowerCase();
-        const searchFrom = from.toLowerCase();
-        const searchTo = to.toLowerCase();
-        
-        let match_type: 'exact' | 'partial' | 'nearby' = 'nearby';
-        if (tripOrigin.includes(searchFrom) && tripDest.includes(searchTo)) {
-          match_type = 'exact';
-        } else if (tripOrigin.includes(searchFrom) || tripDest.includes(searchTo)) {
-          match_type = 'partial';
-        }
-        
-        return { ...trip, match_type };
+      // Call backend search API with parameters
+      await searchRides({ 
+        origin: from, 
+        destination: to, 
+        date: date || undefined 
       });
       
-      return allAvailableTrips.sort((a: any, b: any) => {
-        const order = { exact: 0, partial: 1, nearby: 2 };
-        return order[a.match_type as keyof typeof order] - order[b.match_type as keyof typeof order];
-      });
-      
+      return []; // Return value to match expected type
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : "Failed to search trips";
       setError(errorMsg);
@@ -179,7 +120,7 @@ const PassengerPage = () => {
         onRateTrip={handleRateTrip}
         fetchBookings={handleFetchBookings}
         onCancelBooking={handleCancelBooking}
-        initialTrips={searchParams ? searchResults : trips}
+        initialTrips={searchActive ? searchResults : availableRides}
       />
     </div>
   );

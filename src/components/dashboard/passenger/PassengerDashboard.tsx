@@ -62,8 +62,12 @@ export function PassengerDashboard({
 
   useEffect(() => {
     loadBookings();
-    setAvailableTrips(initialTrips);
   }, []);
+
+  // Update available trips when initialTrips changes (from search or browse)
+  useEffect(() => {
+    setAvailableTrips(initialTrips);
+  }, [initialTrips]);
 
   const loadBookings = async () => {
     const bookings = await fetchBookings();

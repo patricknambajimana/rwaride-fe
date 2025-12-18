@@ -12,4 +12,15 @@ export default defineConfig({
       "@pages": path.resolve(__dirname, "src/pages"),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          charts: ["recharts"],
+        },
+      },
+    },
+  },
 });

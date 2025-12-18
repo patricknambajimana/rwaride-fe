@@ -20,7 +20,7 @@ export function CreateRideWithTrips() {
             <CardTitle className="text-lg">Quick Trip</CardTitle>
           </CardHeader>
           <CardContent className="p-4">
-            <CreateRideForm vehicleId={1} />
+            <CreateRideForm />
           </CardContent>
         </Card>
       </div>

@@ -2,14 +2,53 @@ import { baseApi } from "./baseApi";
 
 export const ridesApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    // 3.1 Trip Search (Public)
-    searchRides: build.query<any[], { origin: string; destination: string }>({
-      query: ({ origin, destination }) => ({
-        url: `/rides/search?origin=${encodeURIComponent(
-          origin
-        )}&destination=${encodeURIComponent(destination)}`,
+    // 3.1 Trip Search (Public) - Enhanced with flexible matching
+    searchRides: build.query<
+      any[],
+      { origin: string; destination: string; date?: string }
+    >({
+      query: ({ origin, destination, date }) => {
+        const params = new URLSearchParams();
+        if (origin) params.append("origin", origin);
+        if (destination) params.append("destination", destination);
+        if (date) params.append("date", date);
+
+        return {
+          url: `/rides/search?${params.toString()}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Ride"],
+      // Transform response to add match quality indicators
+      transformResponse: (response: any[]) => {
+        return response.map((ride) => ({
+          ...ride,
+          // Ensure consistent field names
+          origin: ride.origin || ride.from_location,
+          destination: ride.destination || ride.to_location,
+          available_seats: ride.available_seats ?? ride.seats_available,
+          total_seats: ride.total_seats ?? ride.total_seats,
+        }));
+      },
+    }),
+
+    // 3.1b Get All Available Rides (for passengers to browse)
+    getAvailableRides: build.query<any[], { status?: string }>({
+      query: ({ status = "active" } = {}) => ({
+        url: `/rides?status=${status}`,
+        method: "GET",
       }),
       providesTags: ["Ride"],
+      transformResponse: (response: any[]) => {
+        return response.map((ride) => ({
+          ...ride,
+          // Ensure consistent field names
+          origin: ride.origin || ride.from_location,
+          destination: ride.destination || ride.to_location,
+          available_seats: ride.available_seats ?? ride.seats_available,
+          total_seats: ride.total_seats ?? ride.total_seats,
+        }));
+      },
     }),
 
     // 3.2 Create Trip
@@ -94,6 +133,8 @@ export const ridesApi = baseApi.injectEndpoints({
 
 export const {
   useSearchRidesQuery,
+  useLazySearchRidesQuery,
+  useGetAvailableRidesQuery,
   useCreateRideMutation,
   useGetDriverRidesQuery,
   useUpdateRideMutation,

@@ -18,7 +18,7 @@ export function AdminLayout({
   onTabChange,
 }: AdminLayoutProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-white flex flex-col">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-white flex flex-col">
       {/* Navbar */}
       <AdminNavbar 
         userName={userName} 

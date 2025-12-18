@@ -220,7 +220,7 @@ export function DisputeManagement({
                 {/* Parties */}
                 <div className="grid grid-cols-2 gap-3 mb-4 md:grid-cols-3">
                   <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8 flex-shrink-0">
+                    <Avatar className="h-8 w-8 shrink-0">
                       <AvatarImage
                         src={dispute.reporterImage}
                         alt={dispute.reporterName}

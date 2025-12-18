@@ -112,9 +112,16 @@ export function EarningsView() {
 
       {/* Main Earnings Display */}
       <EarningsDisplay
-        thisMonth={mockEarnings.thisMonth}
-        lastMonth={215000}
-        currency="RWF"
+        data={{
+          totalEarnings: mockEarnings.total,
+          weeklyEarnings: mockEarnings.thisWeek,
+          totalRides: mockTransactions.length,
+          averagePerRide: Math.round(
+            mockTransactions.length > 0
+              ? mockEarnings.total / mockTransactions.length
+              : 0
+          ),
+        }}
       />
 
       {/* Recent Transactions */}
