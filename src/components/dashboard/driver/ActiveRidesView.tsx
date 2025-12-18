@@ -1,68 +1,57 @@
 import { ActiveRideCard, type ActiveRide as CardRide } from './ActiveRideCard';
 import { PassengerList } from './PassengerList';
 import { Badge } from '../../ui/badge';
-import { MapPin } from 'lucide-react';
-
-interface ActivePassengerRide {
-  id: string;
-  passengerName: string;
-  pickupLocation: string;
-  destination: string;
-  currentLocation: string;
-  estimatedArrival: string;
-  fare: number;
-  distance: string;
-}
-
-const mockActiveRides: ActivePassengerRide[] = [
-  {
-    id: '1',
-    passengerName: 'Alice Johnson',
-    pickupLocation: 'Nyarutarama',
-    destination: 'Kigali Heights',
-    currentLocation: 'Kacyiru',
-    estimatedArrival: '15 mins',
-    fare: 4500,
-    distance: '5.2 km',
-  },
-];
+import { MapPin, Loader } from 'lucide-react';
+import { useGetDriverRidesQuery } from '../../../services/api/ridesApi';
+import { toast } from 'sonner';
 
 export function ActiveRidesView() {
+  const { data: activeRides = [], isLoading } = useGetDriverRidesQuery();
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <Loader className="w-6 h-6 animate-spin text-blue-500" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold text-gray-900">Active Passengers</h2>
         <Badge className="bg-blue-500 text-white px-3 py-1 flex items-center gap-2">
           <MapPin className="w-4 h-4" />
-          {mockActiveRides.length} Active
+          {activeRides.length} Active
         </Badge>
       </div>
 
       <div className="grid gap-4">
-        {mockActiveRides.map((r) => {
-          // Map to ActiveRideCard's expected shape
+        {activeRides.map((r: any) => {
           const cardRide: CardRide = {
-            id: r.id,
-            from: r.pickupLocation,
-            to: r.destination,
-            departureTime: 'ASAP',
-            seatsAvailable: 3,
-            pricePerSeat: r.fare,
-            passengers: 1,
-            status: 'active',
+            id: r.id?.toString() || r.trip_id?.toString() || '',
+            from: r.origin || r.from_location || '',
+            to: r.destination || r.to_location || '',
+            departureTime: r.departure_time || 'ASAP',
+            seatsAvailable: r.available_seats || 0,
+            pricePerSeat: r.price_per_seat || 0,
+            passengers: Math.max(0, (r.total_seats || 0) - (r.available_seats || 0)),
+            status: r.status || 'active',
           };
 
           return (
             <ActiveRideCard
-              key={r.id}
+              key={r.id || r.trip_id}
               ride={cardRide}
-              onComplete={() => console.log('Complete ride:', r.id)}
+              onComplete={() => {
+                toast.success('Ride completed!');
+              }}
             />
           );
         })}
       </div>
 
-      {mockActiveRides.length === 0 && (
+      {activeRides.length === 0 && (
         <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
           <MapPin className="w-12 h-12 mx-auto text-gray-400 mb-3" />
           <p className="text-gray-500 font-medium">No active passenger</p>
@@ -71,19 +60,19 @@ export function ActiveRidesView() {
       )}
 
       {/* Passenger Management Section */}
-      {mockActiveRides.length > 0 && (
+      {activeRides.length > 0 && (
         <div className="mt-8">
           <h3 className="text-xl font-semibold mb-4">Passenger Details</h3>
           <PassengerList
-            passengers={mockActiveRides.map((r) => ({
-              id: r.id,
-              name: r.passengerName,
-              pickupLocation: r.pickupLocation,
-              dropoffLocation: r.destination,
-              time: r.estimatedArrival,
-              seats: 1,
+            passengers={activeRides.map((r: any) => ({
+              id: r.id?.toString() || r.trip_id?.toString() || '',
+              name: r.driver_name || 'Passenger',
+              pickupLocation: r.origin || r.from_location || '',
+              dropoffLocation: r.destination || r.to_location || '',
+              time: r.departure_time || 'ASAP',
+              seats: r.available_seats || 0,
               rating: 4.8,
-              status: 'waiting',
+              status: r.status || 'waiting',
             }))}
           />
         </div>

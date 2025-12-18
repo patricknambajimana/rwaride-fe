@@ -1,16 +1,15 @@
-import { Button } from "../../ui/button";
 import { cn } from "@/lib/utils";
+import { Button } from "../../ui/button";
 import {
   LayoutDashboard,
   Users,
-  Car,
   MapPin,
   BookOpen,
   DollarSign,
-  Star,
   ShieldCheck,
   Settings,
-  FileText,
+  AlertTriangle,
+  BarChart3,
   LucideIcon,
 } from "lucide-react";
 
@@ -34,64 +33,51 @@ export function AdminSidebar({
 }: AdminSidebarProps) {
   const menuItems: MenuItem[] = [
     { id: "overview", label: "Dashboard", icon: LayoutDashboard },
-    { id: "users", label: "Users", icon: Users },
-    { id: "drivers", label: "Drivers", icon: Car },
-    { id: "trips", label: "Trips", icon: MapPin },
+    { id: "users", label: "Users & Accounts", icon: Users },
+    { id: "verification", label: "Verification", icon: ShieldCheck, badge: 5 },
+    { id: "disputes", label: "Disputes & Reports", icon: AlertTriangle },
+    { id: "trips", label: "Rides Management", icon: MapPin },
     { id: "bookings", label: "Bookings", icon: BookOpen },
     { id: "payments", label: "Payments", icon: DollarSign },
-    { id: "reviews", label: "Reviews", icon: Star },
-    { id: "verification", label: "Verification", icon: ShieldCheck, badge: 3 },
-    { id: "reports", label: "Reports", icon: FileText },
+    { id: "analytics", label: "Analytics", icon: BarChart3 },
     { id: "settings", label: "Settings", icon: Settings },
   ];
-
-  const handleItemClick = (itemId: string) => {
-    // Call the onSelect callback to change active tab
-    onSelect(itemId);
-  };
 
   return (
     <aside
       className={cn(
-        "fixed left-0 top-[73px] h-[calc(100vh-73px)] w-64 bg-white border-r border-gray-200 overflow-y-auto hidden md:block shadow-sm",
+        "w-64 bg-white border-r border-gray-200 min-h-screen fixed left-0 top-20 bottom-0 pt-8 hidden md:flex flex-col overflow-y-auto z-40",
         className
       )}
     >
-      <nav className="p-4 space-y-1">
+      <div className="flex-1 px-4 space-y-2">
         {menuItems.map((item) => {
-          const Icon = item.icon;
           const isActive = activeItem === item.id;
 
           return (
             <Button
               key={item.id}
               variant={isActive ? "default" : "ghost"}
-              onClick={() => handleItemClick(item.id)}
+              onClick={() => onSelect(item.id)}
               className={cn(
-                "w-full justify-start gap-3 h-11 transition-all duration-200",
+                "w-full justify-start gap-3 relative transition-all duration-200 font-medium",
                 isActive
-                  ? "bg-gradient-to-r from-green-600 to-blue-600 text-white shadow-md hover:from-green-700 hover:to-blue-700"
+                  ? "bg-linear-to-r from-green-500 to-blue-500 text-white shadow-md hover:from-green-600 hover:to-blue-600"
                   : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
               )}
             >
-              <Icon className="w-5 h-5" />
-              <span className="flex-1 text-left font-medium">{item.label}</span>
+              <item.icon className={cn("w-5 h-5", isActive ? "text-white" : "text-gray-600")} />
+              <span className="font-medium">{item.label}</span>
+
               {item.badge && (
-                <span
-                  className={cn(
-                    "px-2 py-0.5 text-xs font-semibold rounded-full",
-                    isActive
-                      ? "bg-white text-green-600"
-                      : "bg-red-100 text-red-600"
-                  )}
-                >
+                <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
                   {item.badge}
                 </span>
               )}
             </Button>
           );
         })}
-      </nav>
+      </div>
     </aside>
   );
 }

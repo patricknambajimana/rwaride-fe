@@ -41,24 +41,22 @@ export function DriverDashboard({ userName = 'Driver', onLogout }: DriverDashboa
               stats={{
                 totalPassengers: stats?.totalRides || 0,
                 totalEarnings: stats?.totalEarnings || 0,
-                totalTrips: stats?.thisMonthRides || 0,
+                totalTrips: stats?.totalRides || 0,
                 totalRate: stats?.averageRating || 0,
               }}
             />
 
-            {/* Trip Trends Chart & Quick Summary */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <TripTrendsChart />
               <QuickSummary />
             </div>
             
-            {/* Recent Messages & Payment Summary */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <RecentMessages />
               </div>
 
-              <Card className="bg-gradient-to-br from-fuchsia-600 to-violet-600 text-white">
+              <Card className="bg-linear-to-br from-fuchsia-600 to-violet-600 text-white">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <span className="text-white/90">Payment Summary</span>
@@ -108,22 +106,22 @@ export function DriverDashboard({ userName = 'Driver', onLogout }: DriverDashboa
               stats={{
                 totalPassengers: stats?.totalRides || 0,
                 totalEarnings: stats?.totalEarnings || 0,
-                totalTrips: stats?.thisMonthRides || 0,
+                totalTrips: stats?.totalRides || 0,
                 totalRate: stats?.averageRating || 0,
               }}
             />
 
-            {/* Trip Trends Chart & Quick Summary */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <TripTrendsChart />
               <QuickSummary />
             </div>
+            
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <RecentMessages />
               </div>
 
-              <Card className="bg-gradient-to-br from-fuchsia-600 to-violet-600 text-white">
+              <Card className="bg-linear-to-br from-fuchsia-600 to-violet-600 text-white">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <span className="text-white/90">Payment Summary</span>

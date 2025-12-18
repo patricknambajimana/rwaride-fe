@@ -81,7 +81,9 @@ export function Login({
       }
 
       // Also update AuthContext for ProtectedRoute compatibility
-      await authContextLogin(email, password, role as 'driver' | 'passenger');
+      if (role !== 'admin') {
+        await authContextLogin(email, password, role as 'driver' | 'passenger');
+      }
       
       // Success message
       console.log(`Login successful! Redirecting to ${role} dashboard...`);

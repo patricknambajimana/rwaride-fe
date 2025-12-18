@@ -1,25 +1,38 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useGetDriverStatsQuery } from '../../../services/api/driverApi';
+import { useGetDriverRidesQuery } from '../../../services/api/ridesApi';
 import { Skeleton } from '../../ui/skeleton';
-
-const mockTripData = [
-  { month: 'Jan', trips: 12 },
-  { month: 'Feb', trips: 19 },
-  { month: 'Mar', trips: 25 },
-  { month: 'Apr', trips: 32 },
-  { month: 'May', trips: 28 },
-  { month: 'Jun', trips: 35 },
-  { month: 'Jul', trips: 42 },
-  { month: 'Aug', trips: 45 },
-  { month: 'Sep', trips: 38 },
-  { month: 'Oct', trips: 48 },
-  { month: 'Nov', trips: 52 },
-  { month: 'Dec', trips: 58 },
-];
+import { useMemo } from 'react';
 
 export function TripTrendsChart() {
-  const { data: stats, isLoading, error } = useGetDriverStatsQuery();
+  const { data: rides = [], isLoading, error } = useGetDriverRidesQuery();
+
+  // Process rides to get monthly trip counts
+  const tripData = useMemo(() => {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const currentYear = new Date().getFullYear();
+    
+    // Initialize counts for all 12 months
+    const monthCounts: { [key: string]: number } = {};
+    monthNames.forEach(month => {
+      monthCounts[month] = 0;
+    });
+
+    // Count trips by month
+    rides.forEach((ride: any) => {
+      const rideDate = new Date(ride.departure_time || ride.created_at);
+      if (rideDate.getFullYear() === currentYear) {
+        const monthName = monthNames[rideDate.getMonth()];
+        monthCounts[monthName]++;
+      }
+    });
+
+    // Convert to chart format
+    return monthNames.map(month => ({
+      month,
+      trips: monthCounts[month]
+    }));
+  }, [rides]);
   return (
     <Card className="w-150">
       <CardHeader>
@@ -36,7 +49,7 @@ export function TripTrendsChart() {
         ) : (
           <ResponsiveContainer width="100%" height={300}>
           <LineChart
-            data={mockTripData}
+            data={tripData}
             margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />

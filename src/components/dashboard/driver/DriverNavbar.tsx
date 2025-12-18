@@ -10,6 +10,8 @@ import {
 import { Badge } from '../../ui/badge';
 import { Bell, LogOut, Settings, User, ChevronDown, PanelLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useGetDriverRidesQuery } from '@/services/api/ridesApi';
+import { useMemo } from 'react';
 
 interface DriverNavbarProps {
   userName?: string;
@@ -22,6 +24,14 @@ interface DriverNavbarProps {
 
 export function DriverNavbar({ userName = 'Driver', onLogout, onProfileClick, onSettingsClick, onToggleSidebar }: DriverNavbarProps) {
   const navigate = useNavigate();
+  const { data: rides = [] } = useGetDriverRidesQuery();
+
+  // Calculate unread message count from all rides
+  const unreadMessageCount = useMemo(() => {
+    return rides.reduce((total: number, ride: any) => {
+      return total + (ride.unread_messages ?? 0);
+    }, 0);
+  }, [rides]);
 
   const handleLogout = () => {
     // Clear localStorage
@@ -60,9 +70,11 @@ export function DriverNavbar({ userName = 'Driver', onLogout, onProfileClick, on
           {/* Notification Bell */}
           <button className="relative p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
             <Bell className="w-5 h-5" />
-            <Badge className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-red-500 text-white text-xs">
-              2
-            </Badge>
+            {unreadMessageCount > 0 && (
+              <Badge className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-red-500 text-white text-xs">
+                {unreadMessageCount}
+              </Badge>
+            )}
           </button>
 
           {/* Profile Dropdown */}

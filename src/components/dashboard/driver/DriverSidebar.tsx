@@ -12,6 +12,8 @@ import {
   PlusCircle,
   LucideIcon,
 } from "lucide-react";
+import { useGetDriverRidesQuery } from "@/services/api/ridesApi";
+import { useMemo } from "react";
 
 interface MenuItem {
   id: string;
@@ -33,13 +35,22 @@ export function DriverSidebar({
   className,
   isMobileVariant,
 }: DriverSidebarProps) {
+  const { data: rides = [] } = useGetDriverRidesQuery();
+
+  // Calculate unread message count from all active rides
+  const unreadMessageCount = useMemo(() => {
+    return rides.reduce((total: number, ride: any) => {
+      return total + (ride.unread_messages ?? 0);
+    }, 0);
+  }, [rides]);
+
   const menuItems: MenuItem[] = [
     { id: "overview", label: "Dashboard", icon: LayoutDashboard },
     { id: "create", label: "Create Trip", icon: PlusCircle },
     { id: "bookings", label: "Bookings", icon: BookOpen },
     { id: "rides", label: "Active Passengers", icon: MapPin },
     { id: "car-registration", label: "Car Registration", icon: Car },
-    { id: "messages", label: "Messages", icon: MessageSquare, badge: 3 },
+    { id: "messages", label: "Messages", icon: MessageSquare, badge: unreadMessageCount || undefined },
     { id: "earnings", label: "Earnings", icon: CreditCard },
     { id: "history", label: "History", icon: History },
     { id: "settings", label: "Settings", icon: Settings },

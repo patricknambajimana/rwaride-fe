@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { NewAdminDashboard } from '../../components/dashboard/admin';
+import { AdminLayout } from '../../components/dashboard/admin/AdminLayout';
+import { AdminDashboardIntegrated } from '../../components/dashboard/admin/AdminDashboardIntegrated';
 
 interface AdminDashboardProps {
   user?: any;
@@ -11,6 +13,7 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
   const navigate = useNavigate();
   const { user: authUser, logout } = useAuth();
   const currentUser = user || authUser;
+  const [activeTab, setActiveTab] = useState('overview');
 
   const handleLogout = () => {
     if (onLogout) {
@@ -22,9 +25,13 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
   };
 
   return (
-    <NewAdminDashboard
+    <AdminLayout
       userName={currentUser?.name || 'Admin'}
       onLogout={handleLogout}
-    />
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+    >
+      <AdminDashboardIntegrated activeTab={activeTab} />
+    </AdminLayout>
   );
 }

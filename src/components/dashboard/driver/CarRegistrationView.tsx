@@ -1,13 +1,8 @@
-import { CarRegistration, CarRegistrationData } from './CarRegistration';
+import { CarRegistration } from './CarRegistration';
 import { Badge } from '../../ui/badge';
 import { Car, ShieldCheck } from 'lucide-react';
 
 export function CarRegistrationView() {
-  const handleSubmit = async (data: CarRegistrationData) => {
-    // TODO: replace with API integration
-    console.log('Car registration submitted:', data);
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -23,7 +18,7 @@ export function CarRegistrationView() {
         <p className="text-sm">Provide accurate vehicle info to enable bookings and verification.</p>
       </div>
 
-      <CarRegistration onSubmit={handleSubmit} />
+      <CarRegistration />
     </div>
   );
 }

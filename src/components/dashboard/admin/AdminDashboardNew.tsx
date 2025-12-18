@@ -2,10 +2,17 @@ import { useState } from "react";
 import { AdminLayout } from "./AdminLayout";
 import { AdminStatsOverview, SystemStats } from "./AdminStatsOverview";
 import { UserManagement, AdminUser } from "./UserManagement";
-import { DisputeManagement, Dispute, DisputeMessage } from "./DisputeManagement";
+import { DisputeManagement, Dispute } from "./DisputeManagement";
 import { VerificationQueue, VerificationRequest } from "./VerificationQueue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { Badge } from "../../ui/badge";
+import { Loader, AlertCircle } from "lucide-react";
+import {
+  useGetAdminStatsQuery,
+  useGetAdminUsersQuery,
+  useGetAdminTripsQuery,
+  useGetAdminBookingsQuery,
+} from "../../../services/api/adminApi";
 import {
   BarChart3,
   Users,
@@ -13,203 +20,31 @@ import {
   CheckCircle,
 } from "lucide-react";
 
-// Mock Data
-const MOCK_STATS: SystemStats = {
-  totalUsers: 12547,
-  activeUsers: 8923,
-  totalRides: 45230,
-  completedRides: 42105,
-  totalRevenue: 128750.5,
-  platformFeeRevenue: 12875.05,
-  averageRating: 4.7,
-  systemHealth: "healthy",
-  pendingVerifications: 23,
-  reportedIssues: 5,
-};
-
-const MOCK_USERS: AdminUser[] = [
-  {
-    id: "user-1",
-    name: "John Smith",
-    email: "john@example.com",
-    phone: "+1-555-0101",
-    userType: "driver",
-    status: "active",
-    rating: 4.8,
-    joinDate: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
-    totalRides: 342,
-    warnings: 0,
-    verified: true,
-  },
-  {
-    id: "user-2",
-    name: "Sarah Johnson",
-    email: "sarah@example.com",
-    phone: "+1-555-0102",
-    userType: "passenger",
-    status: "active",
-    rating: 4.9,
-    joinDate: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString(),
-    totalRides: 87,
-    warnings: 0,
-    verified: true,
-  },
-  {
-    id: "user-3",
-    name: "Mike Wilson",
-    email: "mike@example.com",
-    phone: "+1-555-0103",
-    userType: "driver",
-    status: "suspended",
-    rating: 2.1,
-    joinDate: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString(),
-    totalRides: 12,
-    warnings: 2,
-    verified: false,
-  },
-  {
-    id: "user-4",
-    name: "Emily Brown",
-    email: "emily@example.com",
-    phone: "+1-555-0104",
-    userType: "passenger",
-    status: "active",
-    rating: 4.6,
-    joinDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-    totalRides: 15,
-    warnings: 1,
-    verified: true,
-  },
-];
-
-const MOCK_DISPUTES: Dispute[] = [
-  {
-    id: "dispute-1",
-    reporterName: "Sarah Johnson",
-    defendantName: "John Smith",
-    category: "Lost Item",
-    amount: 45.0,
-    description:
-      "Passenger left phone in vehicle, driver refuses to return it",
-    status: "open",
-    createdDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    messages: [
-      {
-        id: "msg-1",
-        senderType: "reporter",
-        senderName: "Sarah Johnson",
-        message: "I left my phone in the car after the ride",
-        timestamp: new Date(
-          Date.now() - 2 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-      },
-      {
-        id: "msg-2",
-        senderType: "defendant",
-        senderName: "John Smith",
-        message: "I didn't find any phone",
-        timestamp: new Date(
-          Date.now() - 1.5 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-      },
-    ],
-  },
-  {
-    id: "dispute-2",
-    reporterName: "Mike Wilson",
-    defendantName: "Emily Brown",
-    category: "Unfair Rating",
-    description: "Driver gave 1-star rating without reason, affecting my record",
-    status: "investigating",
-    createdDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    messages: [
-      {
-        id: "msg-3",
-        senderType: "reporter",
-        senderName: "Mike Wilson",
-        message: "Why did you rate me 1 star?",
-        timestamp: new Date(
-          Date.now() - 5 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-      },
-      {
-        id: "msg-4",
-        senderType: "admin",
-        senderName: "Admin Support",
-        message: "We are reviewing this case. Thank you for your patience.",
-        timestamp: new Date(
-          Date.now() - 4 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-      },
-    ],
-  },
-];
-
-const MOCK_VERIFICATION_REQUESTS: VerificationRequest[] = [
-  {
-    id: "verify-1",
-    userId: "user-1",
-    userName: "John Smith",
-    userType: "driver",
-    documentType: "Driver License",
-    submissionDate: new Date(
-      Date.now() - 1 * 24 * 60 * 60 * 1000
-    ).toISOString(),
-    status: "pending",
-  },
-  {
-    id: "verify-2",
-    userId: "user-3",
-    userName: "Mike Wilson",
-    userType: "driver",
-    documentType: "Insurance Certificate",
-    submissionDate: new Date(
-      Date.now() - 3 * 24 * 60 * 60 * 1000
-    ).toISOString(),
-    status: "pending",
-  },
-  {
-    id: "verify-3",
-    userId: "user-2",
-    userName: "Sarah Johnson",
-    userType: "passenger",
-    documentType: "ID Verification",
-    submissionDate: new Date(
-      Date.now() - 7 * 24 * 60 * 60 * 1000
-    ).toISOString(),
-    status: "approved",
-  },
-];
-
 export function AdminDashboardNew() {
-  const [stats, setStats] = useState<SystemStats>(MOCK_STATS);
-  const [users, setUsers] = useState<AdminUser[]>(MOCK_USERS);
-  const [disputes, setDisputes] = useState<Dispute[]>(MOCK_DISPUTES);
-  const [verifications, setVerifications] = useState<VerificationRequest[]>(
-    MOCK_VERIFICATION_REQUESTS
-  );
+  // API hooks
+  const { data: statsData, isLoading: statsLoading } = useGetAdminStatsQuery();
+  const { data: usersData = [], isLoading: usersLoading } = useGetAdminUsersQuery();
+  const { data: tripsData = [] } = useGetAdminTripsQuery();
+  const { data: bookingsData = [] } = useGetAdminBookingsQuery();
 
-  // User Management Handlers
+  // Local state for UI
+  const [disputes, setDisputes] = useState<Dispute[]>([]);
+  const [verifications, setVerifications] = useState<VerificationRequest[]>([]);
+
+  // User Management Handlers - These would typically call mutation hooks
   const handleSuspendUser = (userId: string) => {
-    setUsers(
-      users.map((u) =>
-        u.id === userId ? { ...u, status: "suspended" as const } : u
-      )
-    );
+    console.log('Suspending user:', userId);
+    // TODO: Call suspend mutation
   };
 
   const handleBanUser = (userId: string) => {
-    setUsers(
-      users.map((u) =>
-        u.id === userId ? { ...u, status: "banned" as const } : u
-      )
-    );
+    console.log('Banning user:', userId);
+    // TODO: Call ban mutation
   };
 
   const handleRemoveWarning = (userId: string) => {
-    setUsers(
-      users.map((u) => (u.id === userId ? { ...u, warnings: 0 } : u))
-    );
+    console.log('Removing warning for user:', userId);
+    // TODO: Call remove warning mutation
   };
 
   // Dispute Handlers
@@ -280,7 +115,18 @@ export function AdminDashboardNew() {
     (v) => v.status === "pending"
   ).length;
   const openDisputes = disputes.filter((d) => d.status === "open").length;
-  const suspendedUsers = users.filter((u) => u.status === "suspended").length;
+  const suspendedUsers = usersData.filter((u: any) => u.status === "suspended").length;
+
+  // Loading state
+  if (statsLoading || usersLoading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <Loader className="w-8 h-8 animate-spin text-blue-600" />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
@@ -313,7 +159,22 @@ export function AdminDashboardNew() {
         </div>
 
         {/* Stats Overview */}
-        <AdminStatsOverview stats={stats} />
+        {statsData && (
+          <AdminStatsOverview 
+            stats={{
+              totalUsers: statsData.totalUsers,
+              activeUsers: 0,
+              totalRides: statsData.totalTrips,
+              completedRides: 0,
+              totalRevenue: statsData.totalRevenue,
+              platformFeeRevenue: 0,
+              averageRating: 0,
+              systemHealth: "healthy" as const,
+              pendingVerifications: statsData.pendingVerifications,
+              reportedIssues: 0,
+            }} 
+          />
+        )}
 
         {/* Tabs */}
         <Tabs defaultValue="users" className="space-y-4">
@@ -343,12 +204,11 @@ export function AdminDashboardNew() {
           <TabsContent value="users" className="space-y-4">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <p className="text-sm text-blue-900">
-                <strong>Total Users:</strong> {stats.totalUsers} ({stats.activeUsers}{" "}
-                active)
+                <strong>Total Users:</strong> {statsData?.totalUsers || 0}
               </p>
             </div>
             <UserManagement
-              users={users}
+              users={usersData as any[]}
               onSuspend={handleSuspendUser}
               onBan={handleBanUser}
               onRemoveWarning={handleRemoveWarning}
@@ -389,61 +249,51 @@ export function AdminDashboardNew() {
           <TabsContent value="analytics" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Quick Stats */}
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6">
+              <div className="bg-linear-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6">
                 <p className="text-sm font-semibold text-blue-900 mb-2">
-                  Platform Growth
+                  Total Users
                 </p>
                 <p className="text-2xl md:text-3xl font-bold text-blue-600">
-                  {stats.totalUsers.toLocaleString()}
+                  {(statsData?.totalUsers || 0).toLocaleString()}
                 </p>
                 <p className="text-xs text-blue-700 mt-1">
-                  +{Math.round((stats.activeUsers / stats.totalUsers) * 100)}%
-                  active users
+                  {statsData?.totalDrivers || 0} drivers, {statsData?.totalPassengers || 0} passengers
                 </p>
               </div>
 
-              <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-6">
+              <div className="bg-linear-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-6">
                 <p className="text-sm font-semibold text-green-900 mb-2">
                   Revenue This Month
                 </p>
                 <p className="text-2xl md:text-3xl font-bold text-green-600">
-                  ${stats.totalRevenue.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  ${(statsData?.totalRevenue || 0).toLocaleString("en-US", { maximumFractionDigits: 0 })}
                 </p>
                 <p className="text-xs text-green-700 mt-1">
-                  {(
-                    (stats.platformFeeRevenue / stats.totalRevenue) *
-                    100
-                  ).toFixed(1)}
-                  % platform fee
+                  Platform revenue
                 </p>
               </div>
 
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-6">
+              <div className="bg-linear-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-6">
                 <p className="text-sm font-semibold text-purple-900 mb-2">
-                  Ride Completion Rate
+                  Total Trips
                 </p>
                 <p className="text-2xl md:text-3xl font-bold text-purple-600">
-                  {(
-                    (stats.completedRides / stats.totalRides) *
-                    100
-                  ).toFixed(1)}
-                  %
+                  {(statsData?.totalTrips || 0).toLocaleString()}
                 </p>
                 <p className="text-xs text-purple-700 mt-1">
-                  {stats.completedRides.toLocaleString()} of{" "}
-                  {stats.totalRides.toLocaleString()} rides
+                  {statsData?.activeTrips || 0} currently active
                 </p>
               </div>
 
-              <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 border border-yellow-200 rounded-lg p-6">
+              <div className="bg-linear-to-br from-yellow-50 to-yellow-100 border border-yellow-200 rounded-lg p-6">
                 <p className="text-sm font-semibold text-yellow-900 mb-2">
-                  Average Rating
+                  Total Bookings
                 </p>
                 <p className="text-2xl md:text-3xl font-bold text-yellow-600">
-                  {stats.averageRating.toFixed(1)}/5
+                  {(statsData?.totalBookings || 0).toLocaleString()}
                 </p>
                 <p className="text-xs text-yellow-700 mt-1">
-                  Platform satisfaction score
+                  {statsData?.pendingVerifications || 0} pending verifications
                 </p>
               </div>
             </div>
@@ -455,19 +305,17 @@ export function AdminDashboardNew() {
               </h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between items-center p-3 bg-white rounded-lg border">
-                  <span className="text-gray-700">System Status</span>
-                  <Badge className="bg-green-100 text-green-800 capitalize">
-                    {stats.systemHealth}
-                  </Badge>
+                  <span className="text-gray-700">Total Users</span>
+                  <span className="font-semibold">{statsData?.totalUsers || 0}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-white rounded-lg border">
-                  <span className="text-gray-700">Pending Verifications</span>
-                  <span className="font-semibold">{stats.pendingVerifications}</span>
+                  <span className="text-gray-700">Total Drivers</span>
+                  <span className="font-semibold">{statsData?.totalDrivers || 0}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-white rounded-lg border">
-                  <span className="text-gray-700">Reported Issues</span>
-                  <span className="font-semibold text-red-600">
-                    {stats.reportedIssues}
+                  <span className="text-gray-700">Active Trips</span>
+                  <span className="font-semibold text-green-600">
+                    {statsData?.activeTrips || 0}
                   </span>
                 </div>
               </div>

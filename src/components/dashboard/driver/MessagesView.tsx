@@ -4,62 +4,34 @@ import { Avatar, AvatarFallback } from '../../ui/avatar';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
-import { MessageSquare, Send, Search } from 'lucide-react';
-
-interface Message {
-  id: string;
-  senderId: string;
-  senderName: string;
-  text: string;
-  timestamp: string;
-  isDriver: boolean;
-}
-
-interface Conversation {
-  id: string;
-  passengerName: string;
-  lastMessage: string;
-  timestamp: string;
-  unreadCount: number;
-}
-
-const mockConversations: Conversation[] = [
-  {
-    id: '1',
-    passengerName: 'John Doe',
-    lastMessage: 'Thanks for the ride!',
-    timestamp: '2 mins ago',
-    unreadCount: 2,
-  },
-  {
-    id: '2',
-    passengerName: 'Jane Smith',
-    lastMessage: 'On my way',
-    timestamp: '1 hour ago',
-    unreadCount: 0,
-  },
-  {
-    id: '3',
-    passengerName: 'Alice Johnson',
-    lastMessage: 'See you soon',
-    timestamp: '3 hours ago',
-    unreadCount: 1,
-  },
-];
+import { MessageSquare, Send, Search, Loader } from 'lucide-react';
+import { useGetChatHistoryQuery, useSendGroupMessageMutation } from '../../../services/api/messageApi';
+import { toast } from 'sonner';
 
 export function MessagesView() {
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
+  const [selectedRideId, setSelectedRideId] = useState<number | null>(null);
   const [messageText, setMessageText] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredConversations = mockConversations.filter(conv =>
-    conv.passengerName.toLowerCase().includes(searchQuery.toLowerCase())
+  const { data: chatMessages = [] } = useGetChatHistoryQuery(
+    selectedRideId || 0,
+    { skip: !selectedRideId }
   );
+  const [sendMessage] = useSendGroupMessageMutation();
 
-  const handleSendMessage = () => {
-    if (messageText.trim()) {
-      console.log('Send message:', messageText);
-      setMessageText('');
+  const handleSendMessage = async () => {
+    if (messageText.trim() && selectedRideId) {
+      try {
+        await sendMessage({
+          ride_id: selectedRideId,
+          content: messageText,
+        }).unwrap();
+        setMessageText('');
+        toast.success('Message sent!');
+      } catch (error) {
+        toast.error('Failed to send message');
+        console.error(error);
+      }
     }
   };
 
@@ -68,7 +40,7 @@ export function MessagesView() {
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold text-gray-900">Messages</h2>
         <Badge className="bg-red-500 text-white px-3 py-1">
-          {mockConversations.reduce((sum, c) => sum + c.unreadCount, 0)} Unread
+          {chatMessages.length} Messages
         </Badge>
       </div>
 
@@ -88,79 +60,89 @@ export function MessagesView() {
           </div>
 
           <div className="space-y-2">
-            {filteredConversations.map((conv) => (
-              <div
-                key={conv.id}
-                onClick={() => setSelectedConversation(conv.id)}
-                className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                  selectedConversation === conv.id
-                    ? 'bg-gradient-to-r from-green-500 to-blue-500 text-white'
-                    : 'hover:bg-gray-100'
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  <Avatar className="w-10 h-10">
-                    <AvatarFallback className="bg-gradient-to-r from-green-600 to-blue-600 text-white">
-                      {conv.passengerName.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <p className="font-semibold text-sm truncate">{conv.passengerName}</p>
-                      {conv.unreadCount > 0 && (
-                        <Badge className="bg-red-500 text-white text-xs ml-2">
-                          {conv.unreadCount}
-                        </Badge>
-                      )}
+            {chatMessages.length > 0 ? (
+              chatMessages
+                .filter(msg => msg.content.toLowerCase().includes(searchQuery.toLowerCase()))
+                .map((msg) => (
+                  <div
+                    key={msg.id}
+                    onClick={() => setSelectedRideId(msg.ride_id)}
+                    className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                      selectedRideId === msg.ride_id
+                        ? 'bg-linear-to-r from-green-500 to-blue-500 text-white'
+                        : 'hover:bg-gray-100'
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <Avatar className="w-10 h-10">
+                        <AvatarFallback className="bg-linear-to-r from-green-600 to-blue-600 text-white">
+                          {msg.sender_id}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-sm truncate">Ride #{msg.ride_id}</p>
+                        <p className={`text-xs truncate ${selectedRideId === msg.ride_id ? 'text-white/90' : 'text-gray-500'}`}>
+                          {msg.content}
+                        </p>
+                        <p className={`text-xs mt-1 ${selectedRideId === msg.ride_id ? 'text-white/75' : 'text-gray-400'}`}>
+                          {new Date(msg.created_at).toLocaleTimeString()}
+                        </p>
+                      </div>
                     </div>
-                    <p className={`text-xs truncate ${selectedConversation === conv.id ? 'text-white/90' : 'text-gray-500'}`}>
-                      {conv.lastMessage}
-                    </p>
-                    <p className={`text-xs mt-1 ${selectedConversation === conv.id ? 'text-white/75' : 'text-gray-400'}`}>
-                      {conv.timestamp}
-                    </p>
                   </div>
-                </div>
+                ))
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No messages yet</p>
               </div>
-            ))}
+            )}
           </div>
         </Card>
 
         {/* Chat Window */}
         <Card className="md:col-span-2 p-4 flex flex-col">
-          {selectedConversation ? (
+          {selectedRideId ? (
             <>
               {/* Chat Header */}
               <div className="border-b pb-3 mb-4">
                 <div className="flex items-center gap-3">
                   <Avatar className="w-10 h-10">
-                    <AvatarFallback className="bg-gradient-to-r from-green-600 to-blue-600 text-white">
-                      {mockConversations.find(c => c.id === selectedConversation)?.passengerName.charAt(0)}
+                    <AvatarFallback className="bg-linear-to-r from-green-600 to-blue-600 text-white">
+                      #{selectedRideId}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-semibold">
-                      {mockConversations.find(c => c.id === selectedConversation)?.passengerName}
-                    </p>
-                    <p className="text-xs text-gray-500">Active now</p>
+                    <p className="font-semibold">Ride #{selectedRideId}</p>
+                    <p className="text-xs text-gray-500">Active conversation</p>
                   </div>
                 </div>
               </div>
 
               {/* Messages */}
               <div className="flex-1 overflow-y-auto mb-4 space-y-3">
-                <div className="flex justify-end">
-                  <div className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-4 py-2 rounded-lg max-w-xs">
-                    <p className="text-sm">Hello! I'm on my way to pick you up.</p>
-                    <p className="text-xs text-white/75 mt-1">10:30 AM</p>
+                {chatMessages.length > 0 ? (
+                  chatMessages.map((msg) => (
+                    <div key={msg.id} className={`flex ${msg.sender_id === selectedRideId ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-xs rounded-lg px-4 py-2 ${
+                        msg.sender_id === selectedRideId
+                          ? 'bg-linear-to-r from-green-500 to-blue-500 text-white'
+                          : 'bg-gray-100 text-gray-900'
+                      }`}>
+                        <p className="text-sm">{msg.content}</p>
+                        <p className={`text-xs mt-1 ${
+                          msg.sender_id === selectedRideId ? 'text-white/75' : 'text-gray-500'
+                        }`}>
+                          {new Date(msg.created_at).toLocaleTimeString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400">
+                    <p className="text-sm">No messages in this conversation</p>
                   </div>
-                </div>
-                <div className="flex justify-start">
-                  <div className="bg-gray-100 px-4 py-2 rounded-lg max-w-xs">
-                    <p className="text-sm text-gray-900">Great! I'll be waiting outside.</p>
-                    <p className="text-xs text-gray-500 mt-1">10:31 AM</p>
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Message Input */}
@@ -174,7 +156,7 @@ export function MessagesView() {
                 />
                 <Button
                   onClick={handleSendMessage}
-                  className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600"
+                  className="bg-linear-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600"
                 >
                   <Send className="w-4 h-4" />
                 </Button>
@@ -184,7 +166,7 @@ export function MessagesView() {
             <div className="flex-1 flex items-center justify-center text-gray-400">
               <div className="text-center">
                 <MessageSquare className="w-16 h-16 mx-auto mb-3" />
-                <p className="text-lg font-medium">Select a conversation</p>
+                <p className="text-lg font-medium">Select a ride to view messages</p>
                 <p className="text-sm">Choose a conversation to start messaging</p>
               </div>
             </div>

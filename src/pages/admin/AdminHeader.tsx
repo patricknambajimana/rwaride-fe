@@ -8,7 +8,7 @@ interface AdminHeaderProps {
 
 export function AdminHeader({ userName, onLogout }: AdminHeaderProps) {
   return (
-    <header className="bg-white border-b sticky top-0 z-10">
+    <header className="bg-white border-b top-0 z-10 fixed">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="bg-green-500 p-2 rounded-lg">

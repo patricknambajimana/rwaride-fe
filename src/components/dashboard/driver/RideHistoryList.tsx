@@ -41,13 +41,13 @@ export function RideHistoryList({ rides }: RideHistoryListProps) {
     api: ride,
     view: {
       id: ride.id?.toString() || `ride-${Math.random()}`,
-      passengerName: ride.driver_name || 'Your Trip',
+      passengerName: `${ride.booked_seats ?? 0}/${ride.total_seats ?? 0} seats booked`,
       from: ride.origin || 'N/A',
       to: ride.destination || 'N/A',
       date: ride.departure_time ? format(new Date(ride.departure_time), 'MMM dd, yyyy') : 'N/A',
       time: ride.departure_time ? format(new Date(ride.departure_time), 'hh:mm a') : 'N/A',
-      earnings: ride.total_price || 0,
-      rating: ride.rating || 0,
+      earnings: ride.price_per_seat ? (ride.booked_seats || 0) * ride.price_per_seat : 0,
+      rating: ride.average_rating || 0,
     },
   }));
 
@@ -149,21 +149,42 @@ export function RideHistoryList({ rides }: RideHistoryListProps) {
           <CardContent className="p-4">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <p className="font-semibold text-gray-900 mb-3">{view.from} → {view.to}</p>
+                <div className="flex items-center gap-2 mb-3">
+                  <p className="font-semibold text-gray-900">{view.from} → {view.to}</p>
+                  {api && (
+                    <Badge 
+                      className={
+                        api.status === 'completed' 
+                          ? 'bg-green-100 text-green-800' 
+                          : api.status === 'cancelled' 
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-blue-100 text-blue-800'
+                      }
+                    >
+                      {api.status || 'pending'}
+                    </Badge>
+                  )}
+                </div>
 
                 <div className="space-y-2 text-sm text-gray-600">
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-green-600 flex-shrink-0" />
-                    <span>Route Details</span>
+                    <MapPin className="w-4 h-4 text-green-600 shrink-0" />
+                    <span>{view.passengerName}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                    <Calendar className="w-4 h-4 text-blue-600 shrink-0" />
                     <span>{view.date}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                    <Clock className="w-4 h-4 text-purple-600 shrink-0" />
                     <span>{view.time}</span>
                   </div>
+                  {api && (
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-orange-600 shrink-0" />
+                      <span>{api.price_per_seat?.toLocaleString() || 0} RWF per seat</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Inline edit section */}
