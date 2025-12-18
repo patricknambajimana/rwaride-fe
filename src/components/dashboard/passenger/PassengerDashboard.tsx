@@ -9,6 +9,7 @@ import { TripList } from "./TripList";
 import { UpcomingBookingsList } from "./UpcomingBookingsList";
 import { RecentMessages } from "./RecentMessages";
 import { PaymentSummary } from "./PaymentSummary";
+import { Sheet, SheetContent } from "../../ui/sheet";
 import { BookingsList } from "./BookingsList";
 import { ProfileSection } from "./ProfileSection";
 import { SettingsPage } from "./SettingsPage";
@@ -57,6 +58,7 @@ export function PassengerDashboard({
   const [chatOpen, setChatOpen] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     loadBookings();
@@ -79,6 +81,12 @@ export function PassengerDashboard({
   const openChat = (trip: any) => {
     setSelectedTrip(trip);
     setChatOpen(true);
+  };
+
+  const handlePayDriver = () => {
+    // Navigate to payments tab or open a payment flow
+    setActiveTab("payments");
+    console.log("Pay Driver clicked");
   };
 
   const handleMessageBooking = (bookingId: string) => {
@@ -132,9 +140,24 @@ export function PassengerDashboard({
         onChangePasswordClick={onChangePasswordClick}
         onDeleteAccountClick={onDeleteAccountClick}
         onNavigateToSettings={setActiveTab}
+        onToggleSidebar={() => setMobileSidebarOpen(true)}
       />
 
       <div className="flex flex-1">
+        {/* Mobile Sidebar Drawer */}
+        <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
+          <SheetContent side="left" className="p-0 w-64 md:hidden">
+            <Sidebar 
+              isMobileVariant
+              activeItem={activeTab} 
+              onSelect={(id) => { setActiveTab(id); setMobileSidebarOpen(false); }}
+              onLogout={onLogout}
+              onDeleteAccount={onDeleteAccountClick}
+              // Rendered inside drawer, uses mobile variant automatically
+            />
+          </SheetContent>
+        </Sheet>
+
         <Sidebar 
           activeItem={activeTab} 
           onSelect={setActiveTab}
@@ -205,7 +228,12 @@ export function PassengerDashboard({
                     {false ? (
                       <RecentMessages messages={[]} />
                     ) : null}
-                    <PaymentSummary thisMonth="42,500 RWF" pending="5,000 RWF" />
+                    <PaymentSummary
+                      thisMonth="42,500 RWF"
+                      pending="5,000 RWF"
+                      onViewDetails={() => setActiveTab("payments")}
+                      onPayDriver={handlePayDriver}
+                    />
                   </div>
                 </div>
 
@@ -281,7 +309,12 @@ export function PassengerDashboard({
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold">Payments</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <PaymentSummary thisMonth="42,500 RWF" pending="5,000 RWF" />
+                  <PaymentSummary
+                    thisMonth="42,500 RWF"
+                    pending="5,000 RWF"
+                    onViewDetails={() => setActiveTab("payments")}
+                    onPayDriver={handlePayDriver}
+                  />
                   <Card>
                     <CardHeader>
                       <CardTitle>Payment History</CardTitle>

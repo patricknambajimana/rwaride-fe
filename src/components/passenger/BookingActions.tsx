@@ -18,15 +18,15 @@ export function BookingActions({
   onViewReceipt,
 }: BookingActionsProps) {
   return (
-    <div className="flex flex-col md:flex-row gap-2 pt-4 border-t">
+    <div className="flex flex-col sm:flex-row gap-2 pt-3 sm:pt-4 border-t">
       {booking.status === "completed" && !booking.rating && (
         <Button
           variant="outline"
           size="sm"
           onClick={() => onRate?.(booking.id)}
-          className="flex-1"
+          className="flex-1 text-xs sm:text-sm h-8 sm:h-10"
         >
-          <Star className="w-4 h-4 mr-1" />
+          <Star className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
           Rate Driver
         </Button>
       )}
@@ -36,9 +36,9 @@ export function BookingActions({
           variant="outline"
           size="sm"
           onClick={() => onContact?.(booking.id, booking.driverId)}
-          className="flex-1"
+          className="flex-1 text-xs sm:text-sm h-8 sm:h-10"
         >
-          <MessageCircle className="w-4 h-4 mr-1" />
+          <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
           Contact
         </Button>
       )}
@@ -48,7 +48,7 @@ export function BookingActions({
           variant="outline"
           size="sm"
           onClick={() => onViewReceipt(booking.id)}
-          className="flex-1"
+          className="flex-1 text-xs sm:text-sm h-8 sm:h-10"
         >
           Receipt
         </Button>
@@ -59,7 +59,7 @@ export function BookingActions({
           variant="destructive"
           size="sm"
           onClick={() => onCancel(booking.id)}
-          className="flex-1"
+          className="flex-1 text-xs sm:text-sm h-8 sm:h-10"
         >
           Cancel Booking
         </Button>

@@ -68,14 +68,14 @@ export function AdvancedSearchRides({
 
   return (
     <Card className="w-full border-2 border-blue-100 bg-linear-to-br from-blue-50 to-white">
-      <CardHeader className="pb-4 border-b border-blue-100">
+      <CardHeader className="pb-3 sm:pb-4 border-b border-blue-100">
         <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-              <Search className="w-6 h-6 text-blue-600" />
-              Find Your Ride
+          <div className="min-w-0 flex-1">
+            <CardTitle className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2 flex-wrap">
+              <Search className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 flex-shrink-0" />
+              <span>Find Your Ride</span>
             </CardTitle>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">
               Search for available trips from your departure point to your destination
             </p>
           </div>
@@ -86,17 +86,17 @@ export function AdvancedSearchRides({
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Step 1: Location Search */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2 mb-4">
-              <Badge className="bg-blue-600">Step 1</Badge>
-              <h3 className="text-lg font-semibold text-gray-800">Where are you going?</h3>
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              <Badge className="bg-blue-600 text-xs sm:text-sm">Step 1</Badge>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800">Where are you going?</h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 items-end">
               {/* From Location */}
               <div className="space-y-2">
-                <Label htmlFor="from" className="text-sm font-semibold text-gray-700">
+                <Label htmlFor="from" className="text-xs sm:text-sm font-semibold text-gray-700">
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
                       <MapPin className="w-4 h-4 text-green-600" />
                     </div>
                     <span>Departure Location</span>
@@ -104,13 +104,13 @@ export function AdvancedSearchRides({
                 </Label>
                 <Input
                   id="from"
-                  placeholder="e.g., Kigali, Huye, Musanze..."
+                  placeholder="e.g., Kigali, Huye..."
                   value={filters.from}
                   onChange={(e) =>
                     setFilters((prev) => ({ ...prev, from: e.target.value }))
                   }
                   required
-                  className="text-sm border-2 border-gray-200 focus:border-green-500"
+                  className="text-xs sm:text-sm border-2 border-gray-200 focus:border-green-500 h-9 sm:h-10"
                 />
                 {isFromFilled && (
                   <p className="text-xs text-green-600 flex items-center gap-1">
@@ -118,7 +118,7 @@ export function AdvancedSearchRides({
                   </p>
                 )}
                 {!isFromFilled && (
-                  <p className="text-xs text-gray-500">Where do you start your journey?</p>
+                  <p className="text-xs text-gray-500">Where do you start?</p>
                 )}
               </div>
 
@@ -129,18 +129,18 @@ export function AdvancedSearchRides({
                   variant="outline"
                   size="icon"
                   onClick={handleSwap}
-                  className="h-10 w-10 border-2 hover:bg-blue-50"
+                  className="h-8 sm:h-10 w-8 sm:w-10 border-2 hover:bg-blue-50"
                   title="Swap departure and destination"
                 >
-                  <ArrowRight className="w-5 h-5 text-blue-600 rotate-90" />
+                  <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5 text-blue-600 rotate-90" />
                 </Button>
               </div>
 
               {/* To Location */}
               <div className="space-y-2">
-                <Label htmlFor="to" className="text-sm font-semibold text-gray-700">
+                <Label htmlFor="to" className="text-xs sm:text-sm font-semibold text-gray-700">
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
                       <MapPin className="w-4 h-4 text-red-600" />
                     </div>
                     <span>Destination</span>
@@ -148,13 +148,13 @@ export function AdvancedSearchRides({
                 </Label>
                 <Input
                   id="to"
-                  placeholder="e.g., Kigali, Huye, Musanze..."
+                  placeholder="e.g., Kigali, Huye..."
                   value={filters.to}
                   onChange={(e) =>
                     setFilters((prev) => ({ ...prev, to: e.target.value }))
                   }
                   required
-                  className="text-sm border-2 border-gray-200 focus:border-red-500"
+                  className="text-xs sm:text-sm border-2 border-gray-200 focus:border-red-500 h-9 sm:h-10"
                 />
                 {isToFilled && (
                   <p className="text-xs text-green-600 flex items-center gap-1">
@@ -162,7 +162,7 @@ export function AdvancedSearchRides({
                   </p>
                 )}
                 {!isToFilled && (
-                  <p className="text-xs text-gray-500">Where do you want to go?</p>
+                  <p className="text-xs text-gray-500">Where to?</p>
                 )}
               </div>
             </div>
@@ -170,15 +170,15 @@ export function AdvancedSearchRides({
 
           {/* Step 2: Date & Time */}
           <div className="space-y-3 pt-4 border-t-2 border-blue-100">
-            <div className="flex items-center gap-2 mb-4">
-              <Badge className="bg-blue-600">Step 2</Badge>
-              <h3 className="text-lg font-semibold text-gray-800">When do you want to travel?</h3>
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              <Badge className="bg-blue-600 text-xs sm:text-sm">Step 2</Badge>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800">When do you want to travel?</h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
               {/* Date */}
               <div className="space-y-2">
-                <Label htmlFor="date" className="text-sm font-semibold text-gray-700">
+                <Label htmlFor="date" className="text-xs sm:text-sm font-semibold text-gray-700">
                   <div className="flex items-center gap-2 mb-1">
                     <Calendar className="w-4 h-4 text-blue-600" />
                     <span>Travel Date</span>
@@ -193,7 +193,7 @@ export function AdvancedSearchRides({
                   }
                   required
                   min={minDate}
-                  className="text-sm border-2 border-gray-200 focus:border-blue-500"
+                  className="text-xs sm:text-sm border-2 border-gray-200 focus:border-blue-500 h-9 sm:h-10"
                 />
                 {isDateFilled && (
                   <p className="text-xs text-green-600 flex items-center gap-1">
@@ -207,7 +207,7 @@ export function AdvancedSearchRides({
 
               {/* Time (Optional) */}
               <div className="space-y-2">
-                <Label htmlFor="time" className="text-sm font-semibold text-gray-700">
+                <Label htmlFor="time" className="text-xs sm:text-sm font-semibold text-gray-700">
                   <div className="flex items-center gap-2 mb-1">
                     <Clock className="w-4 h-4 text-blue-600" />
                     <span>Departure Time (Optional)</span>
@@ -220,7 +220,7 @@ export function AdvancedSearchRides({
                   onChange={(e) =>
                     setFilters((prev) => ({ ...prev, time: e.target.value }))
                   }
-                  className="text-sm border-2 border-gray-200 focus:border-blue-500"
+                  className="text-xs sm:text-sm border-2 border-gray-200 focus:border-blue-500 h-9 sm:h-10"
                 />
                 <p className="text-xs text-gray-500">Leave blank to see all times</p>
               </div>
@@ -232,25 +232,25 @@ export function AdvancedSearchRides({
             <button
               type="button"
               onClick={() => setExpanded(!expanded)}
-              className="flex items-center justify-between w-full p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center justify-between w-full p-2 sm:p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors flex-wrap gap-2"
             >
-              <div className="flex items-center gap-2">
-                <Badge className="bg-gray-600">Step 3</Badge>
-                <h3 className="text-lg font-semibold text-gray-800">Refine Your Search (Optional)</h3>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge className="bg-gray-600 text-xs sm:text-sm">Step 3</Badge>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800">Refine Your Search (Optional)</h3>
               </div>
-              <div className="transform transition-transform" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)' }}>
-                <Filter className="w-5 h-5 text-gray-600" />
+              <div className="transform transition-transform flex-shrink-0" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)' }}>
+                <Filter className="w-4 sm:w-5 h-4 sm:h-5 text-gray-600" />
               </div>
             </button>
 
             {expanded && (
-              <div className="bg-gray-50 p-4 rounded-lg space-y-4 border-2 border-gray-200">
-                <p className="text-sm text-gray-600">Narrow down your options by price, seats, and driver ratings</p>
+              <div className="bg-gray-50 p-3 sm:p-4 rounded-lg space-y-4 border-2 border-gray-200">
+                <p className="text-xs sm:text-sm text-gray-600">Narrow down your options by price, seats, and driver ratings</p>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
                   {/* Time */}
                   <div className="space-y-2">
-                    <Label htmlFor="filter-time" className="text-sm font-semibold text-gray-700">
+                    <Label htmlFor="filter-time" className="text-xs sm:text-sm font-semibold text-gray-700">
                       <Clock className="inline w-4 h-4 mr-1 text-orange-600" />
                       Departure Time
                     </Label>
@@ -261,13 +261,13 @@ export function AdvancedSearchRides({
                       onChange={(e) =>
                         setFilters((prev) => ({ ...prev, time: e.target.value }))
                       }
-                      className="text-sm border-2 border-gray-300"
+                      className="text-xs sm:text-sm border-2 border-gray-300 h-9 sm:h-10"
                     />
                   </div>
 
                   {/* Max Price */}
                   <div className="space-y-2">
-                    <Label htmlFor="price" className="text-sm font-semibold text-gray-700">
+                    <Label htmlFor="price" className="text-xs sm:text-sm font-semibold text-gray-700">
                       💰 Max Price (RWF)
                     </Label>
                     <Input
@@ -283,7 +283,7 @@ export function AdvancedSearchRides({
                             : undefined,
                         }))
                       }
-                      className="text-sm border-2 border-gray-300"
+                      className="text-xs sm:text-sm border-2 border-gray-300 h-9 sm:h-10"
                       min="0"
                       step="500"
                     />
@@ -291,7 +291,7 @@ export function AdvancedSearchRides({
 
                   {/* Min Seats */}
                   <div className="space-y-2">
-                    <Label htmlFor="seats" className="text-sm font-semibold text-gray-700">
+                    <Label htmlFor="seats" className="text-xs sm:text-sm font-semibold text-gray-700">
                       👥 Available Seats
                     </Label>
                     <Select
@@ -303,7 +303,7 @@ export function AdvancedSearchRides({
                         }))
                       }
                     >
-                      <SelectTrigger className="text-sm border-2 border-gray-300">
+                      <SelectTrigger className="text-xs sm:text-sm border-2 border-gray-300 h-9 sm:h-10">
                         <SelectValue placeholder="Any" />
                       </SelectTrigger>
                       <SelectContent>
@@ -318,7 +318,7 @@ export function AdvancedSearchRides({
 
                   {/* Min Rating */}
                   <div className="space-y-2">
-                    <Label htmlFor="rating" className="text-sm font-semibold text-gray-700">
+                    <Label htmlFor="rating" className="text-xs sm:text-sm font-semibold text-gray-700">
                       ⭐ Minimum Driver Rating
                     </Label>
                     <Select
@@ -330,7 +330,7 @@ export function AdvancedSearchRides({
                         }))
                       }
                     >
-                      <SelectTrigger className="text-sm border-2 border-gray-300">
+                      <SelectTrigger className="text-xs sm:text-sm border-2 border-gray-300 h-9 sm:h-10">
                         <SelectValue placeholder="Any" />
                       </SelectTrigger>
                       <SelectContent>
@@ -349,35 +349,35 @@ export function AdvancedSearchRides({
 
           {/* Search Status & Submit */}
           <div className="space-y-3 pt-4 border-t-2 border-blue-100">
-            <div className="bg-white p-4 rounded-lg border-2 border-blue-200">
-              <p className="text-sm font-medium text-gray-700 mb-2">Search Summary:</p>
-              <div className="grid grid-cols-3 gap-2 text-xs text-gray-600">
+            <div className="bg-white p-2 sm:p-4 rounded-lg border-2 border-blue-200">
+              <p className="text-xs sm:text-sm font-medium text-gray-700 mb-2">Search Summary:</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-gray-600">
                 <div className={`p-2 rounded flex items-center gap-2 ${isFromFilled ? 'bg-green-50 text-green-700' : 'bg-gray-50'}`}>
                   {isFromFilled && <CheckCircle2 className="w-4 h-4" />}
                   {!isFromFilled && <AlertCircle className="w-4 h-4" />}
-                  <span><strong>From:</strong> {filters.from || 'Not set'}</span>
+                  <span className="min-w-0"><strong>From:</strong> {filters.from || 'Not set'}</span>
                 </div>
                 <div className={`p-2 rounded flex items-center gap-2 ${isToFilled ? 'bg-green-50 text-green-700' : 'bg-gray-50'}`}>
                   {isToFilled && <CheckCircle2 className="w-4 h-4" />}
                   {!isToFilled && <AlertCircle className="w-4 h-4" />}
-                  <span><strong>To:</strong> {filters.to || 'Not set'}</span>
+                  <span className="min-w-0"><strong>To:</strong> {filters.to || 'Not set'}</span>
                 </div>
                 <div className={`p-2 rounded flex items-center gap-2 ${isDateFilled ? 'bg-green-50 text-green-700' : 'bg-gray-50'}`}>
                   {isDateFilled && <CheckCircle2 className="w-4 h-4" />}
                   {!isDateFilled && <AlertCircle className="w-4 h-4" />}
-                  <span><strong>Date:</strong> {filters.date || 'Not set'}</span>
+                  <span className="min-w-0"><strong>Date:</strong> {filters.date || 'Not set'}</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <Button
                 type="submit"
                 disabled={loading || !isFormValid}
-                className="flex-1 h-12 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold text-base flex items-center justify-center gap-2 rounded-lg"
+                className="flex-1 h-9 sm:h-12 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold text-xs sm:text-base flex items-center justify-center gap-1 sm:gap-2 rounded-lg"
               >
-                <Search className="w-5 h-5" />
-                {loading ? "Searching..." : "Search Available Rides"}
+                <Search className="w-4 sm:w-5 h-4 sm:h-5" />
+                <span>{loading ? "Searching..." : "Search Rides"}</span>
               </Button>
               <Button
                 type="button"
@@ -390,15 +390,15 @@ export function AdvancedSearchRides({
                   });
                   setExpanded(false);
                 }}
-                className="px-6 border-2"
+                className="px-3 sm:px-6 border-2 text-xs sm:text-sm h-9 sm:h-12"
               >
                 Clear All
               </Button>
             </div>
 
             {!isFormValid && (
-              <div className="bg-amber-50 border-l-4 border-amber-500 p-3 rounded text-sm text-amber-800">
-                <AlertCircle className="inline w-4 h-4 mr-2" />
+              <div className="bg-amber-50 border-l-4 border-amber-500 p-2 sm:p-3 rounded text-xs sm:text-sm text-amber-800">
+                <AlertCircle className="inline w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                 Please fill in all required fields (From, To, and Date) to search
               </div>
             )}

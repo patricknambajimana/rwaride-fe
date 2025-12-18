@@ -1,11 +1,10 @@
-import { CreateRideForm, CreateRideData } from './CreateRideForm';
+ import { CreateRideForm, CreateRideData } from './CreateRideForm';
 import { Card } from '../../ui/card';
 import { Badge } from '../../ui/badge';
 import { Calendar, Clock, MapPin } from 'lucide-react';
 
 export function CreateTripView() {
   const handleSubmit = async (data: CreateRideData) => {
-    // TODO: replace with API integration
     console.log('Create trip submitted:', data);
   };
 

@@ -58,28 +58,28 @@ export function ChatWindow({
   };
 
   return (
-    <Card className="flex flex-col h-full max-h-screen md:max-h-[600px] w-full">
+    <Card className="flex flex-col h-full max-h-screen sm:max-h-[600px] w-full">
       {/* Header */}
-      <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
-        <div>
-          <CardTitle className="text-lg">{recipientName}</CardTitle>
-          <p className="text-xs text-gray-600 mt-1">Chat ID: {chatId}</p>
+      <CardHeader className="flex flex-row items-center justify-between border-b pb-2 sm:pb-4">
+        <div className="min-w-0 flex-1">
+          <CardTitle className="text-base sm:text-lg truncate">{recipientName}</CardTitle>
+          <p className="text-xs text-gray-600 mt-1 truncate">Chat ID: {chatId}</p>
         </div>
         <Button
           variant="ghost"
           size="icon"
           onClick={onClose}
-          className="h-8 w-8"
+          className="h-8 w-8 flex-shrink-0"
         >
           <X className="w-4 h-4" />
         </Button>
       </CardHeader>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
+      <ScrollArea className="flex-1 p-3 sm:p-4">
+        <div className="space-y-3 sm:space-y-4">
           {sortedMessages.length === 0 ? (
-            <div className="flex items-center justify-center h-32 text-gray-500 text-sm">
+            <div className="flex items-center justify-center h-32 text-gray-500 text-xs sm:text-sm">
               <p>No messages yet. Start the conversation!</p>
             </div>
           ) : (
@@ -94,13 +94,13 @@ export function ChatWindow({
                   </Avatar>
                 )}
                 <div
-                  className={`max-w-xs px-3 py-2 rounded-lg ${
+                  className={`max-w-xs sm:max-w-sm px-3 py-2 rounded-lg text-xs sm:text-sm ${
                     msg.isOwn
                       ? "bg-blue-500 text-white rounded-br-none"
                       : "bg-gray-200 text-gray-900 rounded-bl-none"
                   }`}
                 >
-                  <p className="text-sm">{msg.message}</p>
+                  <p className="text-xs sm:text-sm">{msg.message}</p>
                   <p
                     className={`text-xs mt-1 ${
                       msg.isOwn ? "text-blue-100" : "text-gray-600"
@@ -119,7 +119,7 @@ export function ChatWindow({
       </ScrollArea>
 
       {/* Input */}
-      <CardContent className="border-t p-4 space-y-3">
+      <CardContent className="border-t p-2 sm:p-4 space-y-2 sm:space-y-3">
         <div className="flex gap-2">
           <Input
             value={messageText}
@@ -127,13 +127,13 @@ export function ChatWindow({
             onKeyPress={handleKeyPress}
             placeholder="Type your message..."
             disabled={loading}
-            className="text-sm"
+            className="text-xs sm:text-sm h-8 sm:h-10"
           />
           <Button
             onClick={handleSend}
             disabled={loading || !messageText.trim()}
             size="icon"
-            className="h-10 w-10 flex-shrink-0"
+            className="h-8 sm:h-10 w-8 sm:w-10 flex-shrink-0"
           >
             <Send className="w-4 h-4" />
           </Button>

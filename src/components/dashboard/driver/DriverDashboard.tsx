@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DriverLayout } from './DriverLayout';
 import { DriverStatsOverview } from './DriverStatsOverview';
+import { TripTrendsChart } from './TripTrendsChart';
 import { BookingsView } from './BookingsView';
 import { ActiveRidesView } from './ActiveRidesView';
 import { MessagesView } from './MessagesView';
@@ -9,9 +10,10 @@ import { HistoryView } from './HistoryView';
 import { SettingsView } from './SettingsView';
 import { CreateTripView } from './CreateTripView';
 import { CarRegistrationView } from './CarRegistrationView';
+import { RecentMessages } from './RecentMessages';
+import { QuickSummary } from './QuickSummary';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
-import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
+import { useGetDriverStatsQuery, useGetBookingRequestsQuery, useGetDriverProfileQuery } from '../../../services/api/driverApi';
 
 interface DriverDashboardProps {
   userName?: string;
@@ -20,7 +22,11 @@ interface DriverDashboardProps {
 
 export function DriverDashboard({ userName = 'Driver', onLogout }: DriverDashboardProps) {
   const [activeTab, setActiveTab] = useState('overview');
-
+  
+  // Fetch data from API
+  const { data: stats } = useGetDriverStatsQuery();
+  const { data: bookingRequests } = useGetBookingRequestsQuery();
+  const { data: profileData } = useGetDriverProfileQuery();
 
   const renderContent = () => {
     switch (activeTab) {
@@ -33,37 +39,23 @@ export function DriverDashboard({ userName = 'Driver', onLogout }: DriverDashboa
             </div>
             <DriverStatsOverview
               stats={{
-                totalPassengers: 342,
-                totalEarnings: 45200,
-                totalTrips: 247,
-                totalRate: 4.8,
+                totalPassengers: stats?.totalRides || 0,
+                totalEarnings: stats?.totalEarnings || 0,
+                totalTrips: stats?.thisMonthRides || 0,
+                totalRate: stats?.averageRating || 0,
               }}
             />
 
-            {/* Find Your Next Ride */}
-            <div className="rounded-xl p-6 bg-gradient-to-r from-green-500 to-blue-600 text-white">
-              <h3 className="text-xl font-semibold mb-4">Find Your Next Ride</h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                <Input placeholder="From (From City)" className="bg-white/90 text-gray-900 placeholder:text-gray-500" />
-                <Input placeholder="To (Destination)" className="bg-white/90 text-gray-900 placeholder:text-gray-500" />
-                <Input type="date" placeholder="mm/dd/yyyy" className="bg-white/90 text-gray-900 placeholder:text-gray-500" />
-                <Button variant="secondary" className="bg-white text-blue-700 hover:bg-white/90">Search Rides</Button>
-              </div>
+            {/* Trip Trends Chart & Quick Summary */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <TripTrendsChart />
+              <QuickSummary />
             </div>
-
-            {/* Upcoming Bookings & Payment Summary */}
+            
+            {/* Recent Messages & Payment Summary */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Upcoming Bookings</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-center h-40 rounded-md border bg-muted/30 text-muted-foreground">
-                      No upcoming bookings
-                    </div>
-                  </CardContent>
-                </Card>
+                <RecentMessages />
               </div>
 
               <Card className="bg-gradient-to-br from-fuchsia-600 to-violet-600 text-white">
@@ -114,37 +106,21 @@ export function DriverDashboard({ userName = 'Driver', onLogout }: DriverDashboa
             
             <DriverStatsOverview
               stats={{
-                totalPassengers: 342,
-                totalEarnings: 45200,
-                totalTrips: 247,
-                totalRate: 4.8,
+                totalPassengers: stats?.totalRides || 0,
+                totalEarnings: stats?.totalEarnings || 0,
+                totalTrips: stats?.thisMonthRides || 0,
+                totalRate: stats?.averageRating || 0,
               }}
             />
 
-            {/* Find Your Next Ride */}
-            <div className="rounded-xl p-6 bg-gradient-to-r from-green-500 to-blue-600 text-white">
-              <h3 className="text-xl font-semibold mb-4">Find Your Next Ride</h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                <Input placeholder="From (From City)" className="bg-white/90 text-gray-900 placeholder:text-gray-500" />
-                <Input placeholder="To (Destination)" className="bg-white/90 text-gray-900 placeholder:text-gray-500" />
-                <Input type="date" placeholder="mm/dd/yyyy" className="bg-white/90 text-gray-900 placeholder:text-gray-500" />
-                <Button variant="secondary" className="bg-white text-blue-700 hover:bg-white/90">Search Rides</Button>
-              </div>
+            {/* Trip Trends Chart & Quick Summary */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <TripTrendsChart />
+              <QuickSummary />
             </div>
-
-            {/* Upcoming Bookings & Payment Summary */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Upcoming Bookings</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-center h-40 rounded-md border bg-muted/30 text-muted-foreground">
-                      No upcoming bookings
-                    </div>
-                  </CardContent>
-                </Card>
+                <RecentMessages />
               </div>
 
               <Card className="bg-gradient-to-br from-fuchsia-600 to-violet-600 text-white">

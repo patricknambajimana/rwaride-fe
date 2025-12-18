@@ -33,7 +33,7 @@ export function DriverStatsOverview({
             <div>
               <p className="text-sm text-gray-600 mb-2">Total Passengers</p>
               <p className="text-3xl font-bold text-gray-900">{stats.totalPassengers || 0}</p>
-              <p className="text-xs text-purple-600 mt-2">↑ +15% this month</p>
+              <p className="text-xs text-purple-600 mt-2">this month</p>
             </div>
             <div className="p-2 bg-purple-100 rounded-lg">
               <Users className="w-6 h-6 text-purple-600" />

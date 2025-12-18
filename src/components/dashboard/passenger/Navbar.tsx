@@ -1,4 +1,4 @@
-import { LogOut, Settings, Bell, User, ChevronDown, Lock, Trash2 } from "lucide-react";
+import { LogOut, Settings, Bell, User, ChevronDown, Lock, Trash2, PanelLeft } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
 import { Avatar, AvatarFallback } from "../../ui/avatar";
@@ -18,15 +18,26 @@ interface Props {
   onChangePasswordClick?: () => void;
   onDeleteAccountClick?: () => void;
   onNavigateToSettings?: (tab: string) => void;
+  onToggleSidebar?: () => void;
 }
 
-export function Navbar({ userName, onLogout, onProfileClick, onSettingsClick, onChangePasswordClick, onDeleteAccountClick, onNavigateToSettings }: Props) {
+export function Navbar({ userName, onLogout, onProfileClick, onSettingsClick, onChangePasswordClick, onDeleteAccountClick, onNavigateToSettings, onToggleSidebar }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
     <nav className="bg-white border-b sticky top-0 z-40">
       <div className="px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
+          {/* Mobile: Sidebar trigger */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden mr-1"
+            onClick={() => onToggleSidebar?.()}
+            aria-label="Open menu"
+          >
+            <PanelLeft className="w-5 h-5" />
+          </Button>
           <div className="bg-linear-to-r from-green-500 to-blue-500 p-2 rounded-lg">
             <span className="text-white font-bold text-lg">R</span>
           </div>

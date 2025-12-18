@@ -82,66 +82,66 @@ export function BookingsList({
   if (!bookings || bookings.length === 0) {
     return (
       <Card>
-        <CardContent className="p-12 text-center text-gray-500">
-          <p className="text-lg font-medium">No bookings yet</p>
-          <p className="text-sm mt-1">Start by searching and booking a ride</p>
+        <CardContent className="p-6 sm:p-12 text-center text-gray-500">
+          <p className="text-base sm:text-lg font-medium">No bookings yet</p>
+          <p className="text-xs sm:text-sm mt-1">Start by searching and booking a ride</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {bookings.map((booking) => (
         <Card
           key={booking.id}
           className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
           onClick={() => setExpandedBooking(expandedBooking === booking.id ? null : booking.id)}
         >
-          <CardContent className="p-4 md:p-6 space-y-4">
+          <CardContent className="p-3 sm:p-6 space-y-4">
             {/* Header */}
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-gray-800">{booking.driverName}</h3>
+            <div className="flex items-start justify-between gap-2 flex-wrap">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 truncate">{booking.driverName}</h3>
                   {getStatusBadge(booking.status)}
                 </div>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-xs sm:text-sm text-gray-600 mb-3">
                   {booking.bookingNumber && `Booking: ${booking.bookingNumber}`}
                 </p>
               </div>
             </div>
 
             {/* Route Info */}
-            <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+            <div className="grid grid-cols-2 gap-2 sm:gap-4 bg-gray-50 p-3 sm:p-4 rounded-lg">
               <div>
                 <p className="text-xs text-gray-500 font-medium mb-1">FROM</p>
-                <p className="text-sm font-semibold text-gray-800 flex items-center gap-1">
-                  <MapPin className="w-4 h-4 text-green-600" />
-                  {booking.fromLocation}
+                <p className="text-xs sm:text-sm font-semibold text-gray-800 flex items-center gap-1 truncate">
+                  <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
+                  <span className="truncate">{booking.fromLocation}</span>
                 </p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 font-medium mb-1">TO</p>
-                <p className="text-sm font-semibold text-gray-800 flex items-center gap-1">
-                  <MapPin className="w-4 h-4 text-red-600" />
-                  {booking.toLocation}
+                <p className="text-xs sm:text-sm font-semibold text-gray-800 flex items-center gap-1 truncate">
+                  <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-red-600 flex-shrink-0" />
+                  <span className="truncate">{booking.toLocation}</span>
                 </p>
               </div>
             </div>
 
             {/* Date & Time */}
-            <div className="flex items-center gap-4 text-sm text-gray-600 flex-wrap">
+            <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 flex-wrap">
               <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span>{new Date(booking.departureDate).toLocaleDateString()}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
+                <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span>{booking.departureTime}</span>
               </div>
               {booking.seatsBooked && (
-                <Badge variant="secondary">
+                <Badge variant="secondary" className="text-xs">
                   {booking.seatsBooked} seat{booking.seatsBooked > 1 ? 's' : ''}
                 </Badge>
               )}
@@ -149,10 +149,10 @@ export function BookingsList({
 
             {/* Price Info */}
             {booking.totalPrice && (
-              <div className="bg-blue-50 p-3 rounded-lg flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Total Price:</span>
-                <span className="text-lg font-bold text-blue-600 flex items-center gap-1">
-                  <DollarSign className="w-4 h-4" />
+              <div className="bg-blue-50 p-2 sm:p-3 rounded-lg flex items-center justify-between">
+                <span className="text-xs sm:text-sm font-medium text-gray-700">Total Price:</span>
+                <span className="text-base sm:text-lg font-bold text-blue-600 flex items-center gap-1">
+                  <DollarSign className="w-3 h-3 sm:w-4 sm:h-4" />
                   {booking.totalPrice} RWF
                 </span>
               </div>
@@ -160,18 +160,18 @@ export function BookingsList({
 
             {/* Expanded Driver Contact & Actions */}
             {expandedBooking === booking.id && (
-              <div className="space-y-4 border-t pt-4">
+              <div className="space-y-3 sm:space-y-4 border-t pt-3 sm:pt-4">
                 {/* Driver Contact Info */}
                 {(booking.driverPhone || booking.driverEmail) && (
-                  <div className="bg-green-50 border-2 border-green-200 p-4 rounded-lg space-y-2">
-                    <p className="text-sm font-semibold text-gray-700 mb-2">Driver Contact:</p>
+                  <div className="bg-green-50 border-2 border-green-200 p-3 sm:p-4 rounded-lg space-y-2">
+                    <p className="text-xs sm:text-sm font-semibold text-gray-700 mb-2">Driver Contact:</p>
                     {booking.driverPhone && (
                       <div className="flex items-center gap-2">
-                        <PhoneIcon className="w-4 h-4 text-green-600" />
+                        <PhoneIcon className="w-4 h-4 text-green-600 flex-shrink-0" />
                         <a
                           href={`tel:${booking.driverPhone}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="text-green-600 hover:underline font-medium"
+                          className="text-green-600 hover:underline font-medium text-xs sm:text-sm truncate"
                         >
                           {booking.driverPhone}
                         </a>
@@ -179,11 +179,11 @@ export function BookingsList({
                     )}
                     {booking.driverEmail && (
                       <div className="flex items-center gap-2">
-                        <MailIcon className="w-4 h-4 text-green-600" />
+                        <MailIcon className="w-4 h-4 text-green-600 flex-shrink-0" />
                         <a
                           href={`mailto:${booking.driverEmail}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="text-green-600 hover:underline font-medium"
+                          className="text-green-600 hover:underline font-medium text-xs sm:text-sm truncate"
                         >
                           {booking.driverEmail}
                         </a>

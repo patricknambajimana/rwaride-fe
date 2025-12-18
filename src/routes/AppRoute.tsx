@@ -31,8 +31,17 @@ export function AppRoutes() {
               
             }
           />
-          <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/admin/profile" element={<ProtectedRoute ><ProfileManagement /></ProtectedRoute>} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<AdminDashboard />} />
+          <Route path="/admin/drivers" element={<AdminDashboard />} />
+          <Route path="/admin/trips" element={<AdminDashboard />} />
+          <Route path="/admin/bookings" element={<AdminDashboard />} />
+          <Route path="/admin/payments" element={<AdminDashboard />} />
+          <Route path="/admin/reviews" element={<AdminDashboard />} />
+          <Route path="/admin/verification" element={<AdminDashboard />} />
+          <Route path="/admin/reports" element={<AdminDashboard />} />
+          <Route path="/admin/settings" element={<AdminDashboard />} />
+          <Route path="/admin/profile" element={<ProfileManagement />} />
           <Route path="/auth/login" element={<Login onSuccess={() => {}} onSwitchToSignUp={() => {}} />} />
           <Route path="/auth/signup" element={<SignUp onSuccess={() => {}} onSwitchToLogin={() => {}} />} />
         </Routes>

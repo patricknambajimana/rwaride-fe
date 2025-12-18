@@ -20,7 +20,12 @@ export function DriverLayout({
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-white flex flex-col">
       {/* Navbar */}
-      <DriverNavbar userName={userName} onLogout={onLogout} />
+      <DriverNavbar 
+        userName={userName} 
+        onLogout={onLogout}
+        onProfileClick={() => onTabChange?.('settings')}
+        onSettingsClick={() => onTabChange?.('settings')}
+      />
 
       {/* Main Content */}
       <div className="flex flex-1">

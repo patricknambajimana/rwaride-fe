@@ -11,15 +11,14 @@ import { Badge } from '../../ui/badge';
 import { Bell, LogOut, Settings, User, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-interface DriverNavbarProps {
+interface AdminNavbarProps {
   userName?: string;
   onLogout?: () => void;
   onProfileClick?: () => void;
   onSettingsClick?: () => void;
-  activeTab?: string;
 }
 
-export function DriverNavbar({ userName = 'Driver', onLogout, onProfileClick, onSettingsClick }: DriverNavbarProps) {
+export function AdminNavbar({ userName = 'Admin', onLogout, onProfileClick, onSettingsClick }: AdminNavbarProps) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -33,15 +32,19 @@ export function DriverNavbar({ userName = 'Driver', onLogout, onProfileClick, on
     // Navigate to login page
     navigate('/auth/login', { replace: true });
   };
+
   return (
     <nav className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-full mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-linear-to-r from-green-600 to-blue-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-green-600 to-blue-600 flex items-center justify-center">
             <span className="text-white font-bold">R</span>
           </div>
-          <h1 className="text-xl font-bold text-gray-900">RwaRide</h1>
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">RwaRide Admin</h1>
+            <p className="text-xs text-gray-500">Management Portal</p>
+          </div>
         </div>
 
         {/* Right side */}
@@ -50,7 +53,7 @@ export function DriverNavbar({ userName = 'Driver', onLogout, onProfileClick, on
           <button className="relative p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
             <Bell className="w-5 h-5" />
             <Badge className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-red-500 text-white text-xs">
-              2
+              5
             </Badge>
           </button>
 
@@ -59,8 +62,8 @@ export function DriverNavbar({ userName = 'Driver', onLogout, onProfileClick, on
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center gap-2 px-3 py-2 h-auto hover:bg-gray-100 rounded-lg">
                 <Avatar className="w-9 h-9 border-2 border-gray-200">
-                  <AvatarFallback className="bg-linear-to-r from-green-600 to-blue-600 text-white text-sm font-semibold">
-                    {userName?.charAt(0).toUpperCase() || 'D'}
+                  <AvatarFallback className="bg-gradient-to-r from-green-600 to-blue-600 text-white text-sm font-semibold">
+                    {userName?.charAt(0).toUpperCase() || 'A'}
                   </AvatarFallback>
                 </Avatar>
                 <span className="hidden md:inline text-sm font-semibold text-gray-900">{userName}</span>
@@ -69,12 +72,12 @@ export function DriverNavbar({ userName = 'Driver', onLogout, onProfileClick, on
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               {/* Profile Header */}
-              <div className="px-4 py-3 border-b bg-linear-to-r from-green-50 to-blue-50">
+              <div className="px-4 py-3 border-b bg-gradient-to-r from-green-50 to-blue-50">
                 <p className="font-semibold text-gray-900">{userName}</p>
-                <p className="text-xs text-gray-600">Driver Account</p>
+                <p className="text-xs text-gray-600">Administrator Account</p>
               </div>
 
-              {/* Profile Management - Links to Settings Tab */}
+              {/* Profile Management */}
               <DropdownMenuItem 
                 onClick={() => {
                   onProfileClick?.();
@@ -85,7 +88,7 @@ export function DriverNavbar({ userName = 'Driver', onLogout, onProfileClick, on
                 <span>Profile Management</span>
               </DropdownMenuItem>
 
-              {/* Settings - Links to Settings Tab */}
+              {/* Settings */}
               <DropdownMenuItem 
                 onClick={() => {
                   onSettingsClick?.();

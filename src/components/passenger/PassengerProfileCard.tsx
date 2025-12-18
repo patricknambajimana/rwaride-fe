@@ -77,11 +77,11 @@ export function PassengerProfileCard({
     <div className="space-y-6">
       {/* Profile Header Card */}
       <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center">
             {/* Avatar */}
             <div className="relative shrink-0">
-              <Avatar className="h-24 w-24 md:h-32 md:w-32">
+              <Avatar className="h-20 w-20 sm:h-32 sm:w-32">
                 <AvatarImage src={profile.profileImage} alt={profile.name} />
                 <AvatarFallback>{profile.name[0]}</AvatarFallback>
               </Avatar>
@@ -89,18 +89,18 @@ export function PassengerProfileCard({
                 <Button
                   size="icon"
                   variant="outline"
-                  className="absolute bottom-0 right-0 rounded-full h-8 w-8"
+                  className="absolute bottom-0 right-0 rounded-full h-7 w-7 sm:h-8 sm:w-8"
                   onClick={onEditPhoto}
                 >
-                  <Edit2 className="w-4 h-4" />
+                  <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
               )}
             </div>
 
             {/* Profile Info */}
-            <div className="flex-1 space-y-4">
+            <div className="flex-1 space-y-3 sm:space-y-4 w-full">
               <div>
-                <h2 className="text-2xl font-bold mb-2">{profile.name}</h2>
+                <h2 className="text-lg sm:text-2xl font-bold mb-2">{profile.name}</h2>
                 <div className="flex flex-wrap gap-2 items-center mb-3">
                   {getVerificationBadge()}
                   <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-medium">
@@ -110,22 +110,22 @@ export function PassengerProfileCard({
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 py-4 border-y">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 py-3 sm:py-4 border-y">
                 <div>
-                  <p className="text-sm text-gray-600">Total Trips</p>
-                  <p className="text-lg font-bold text-green-600">
+                  <p className="text-xs sm:text-sm text-gray-600">Total Trips</p>
+                  <p className="text-base sm:text-lg font-bold text-green-600">
                     {profile.totalTrips}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Rating</p>
-                  <p className="text-lg font-bold text-yellow-600">
+                  <p className="text-xs sm:text-sm text-gray-600">Rating</p>
+                  <p className="text-base sm:text-lg font-bold text-yellow-600">
                     {profile.averageRating.toFixed(1)} ★
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Member Since</p>
-                  <p className="text-lg font-bold text-blue-600">
+                  <p className="text-xs sm:text-sm text-gray-600">Member Since</p>
+                  <p className="text-base sm:text-lg font-bold text-blue-600">
                     {new Date(profile.joinDate).toLocaleDateString("en-US", {
                       month: "short",
                       year: "numeric",
@@ -136,18 +136,18 @@ export function PassengerProfileCard({
 
               {/* Contact Info */}
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <Mail className="w-4 h-4 text-gray-600" />
-                  <span className="text-gray-600">{profile.email}</span>
+                <div className="flex items-center gap-2 text-xs sm:text-sm">
+                  <Mail className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                  <span className="text-gray-600 truncate">{profile.email}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Phone className="w-4 h-4 text-gray-600" />
-                  <span className="text-gray-600">{profile.phone}</span>
+                <div className="flex items-center gap-2 text-xs sm:text-sm">
+                  <Phone className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                  <span className="text-gray-600 truncate">{profile.phone}</span>
                 </div>
                 {profile.city && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <MapPin className="w-4 h-4 text-gray-600" />
-                    <span className="text-gray-600">{profile.city}</span>
+                  <div className="flex items-center gap-2 text-xs sm:text-sm">
+                    <MapPin className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                    <span className="text-gray-600 truncate">{profile.city}</span>
                   </div>
                 )}
               </div>

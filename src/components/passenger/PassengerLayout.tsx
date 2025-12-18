@@ -17,7 +17,7 @@ export function PassengerLayout({
     <div className="min-h-screen flex flex-col bg-linear-to-br from-gray-50 to-gray-100">
       <Navbar userName={userName} onLogout={onLogout} userRole="passenger" />
 
-      <main className="flex-1 container mx-auto px-4 py-6 md:py-8">
+      <main className="flex-1 container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 w-full">
         {children}
       </main>
 

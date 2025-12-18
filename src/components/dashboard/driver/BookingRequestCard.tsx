@@ -2,7 +2,9 @@
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
 import { Avatar, AvatarFallback } from '../../ui/avatar';
-import { MapPin, Phone, Mail, CheckCircle, XCircle } from 'lucide-react';
+import { MapPin, Phone, Mail, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { useApproveBookingMutation } from '../../../services/api/ridesApi';
 
 export interface BookingRequest {
   id: string;
@@ -15,24 +17,32 @@ export interface BookingRequest {
 }
 
 interface BookingRequestCardProps {
-  booking?: BookingRequest;
+  booking: BookingRequest;
   onAccept?: () => void;
   onReject?: () => void;
 }
 
 export function BookingRequestCard({
-  booking = {
-    id: '1',
-    passengerName: 'John Doe',
-    passengerEmail: 'john@example.com',
-    passengerPhone: '+250788000111',
-    from: 'Kigali',
-    to: 'Huye',
-    status: 'pending',
-  },
+  booking,
   onAccept,
   onReject,
 }: BookingRequestCardProps) {
+  const [approveBooking, { isLoading: isApproving }] = useApproveBookingMutation();
+
+  const handleApprove = async () => {
+    try {
+      await approveBooking({ booking_id: Number(booking.id) }).unwrap();
+      toast.success('Booking approved', {
+        description: `${booking.passengerName} is confirmed for this trip`,
+      });
+      if (onAccept) onAccept();
+    } catch (error: any) {
+      toast.error('Failed to approve booking', {
+        description: error?.data?.message || error?.message || 'Please try again',
+      });
+    }
+  };
+
   return (
     <Card className="border-2 hover:shadow-lg transition-shadow">
       <CardHeader className="pb-3">
@@ -86,11 +96,21 @@ export function BookingRequestCard({
               Reject
             </Button>
             <Button
-              onClick={onAccept}
-              className="flex-1 bg-linear-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white"
+              onClick={handleApprove}
+              disabled={isApproving}
+              className="flex-1 bg-linear-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white disabled:opacity-70"
             >
-              <CheckCircle className="w-4 h-4 mr-2" />
-              Accept
+              {isApproving ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Approving...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  <CheckCircle className="w-4 h-4" />
+                  Accept
+                </span>
+              )}
             </Button>
           </div>
         )}

@@ -1,5 +1,13 @@
 // Layout
 export { AdminLayout } from "./AdminLayout";
+export { AdminNavbar } from "./AdminNavbar";
+export { AdminSidebar } from "./AdminSidebar";
+
+// New Dashboard Components
+export { AdminOverview } from "./AdminOverview";
+export { AdminUsersView } from "./AdminUsersView";
+export { AdminSettingsView } from "./AdminSettingsView";
+export { NewAdminDashboard } from "./NewAdminDashboard";
 
 // Components
 export { AdminStatsOverview, type SystemStats } from "./AdminStatsOverview";
